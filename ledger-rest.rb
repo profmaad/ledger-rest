@@ -5,8 +5,9 @@ require 'sinatra'
 require 'sinatra/reloader' if development?
 
 VERSION = "0.0"
-LEDGER_BIN = "/home/profmaad/compilation/ledger/ledger"
+LEDGER_BIN = "/usr/bin/ledger"
 LEDGER_FILE = ENV['LEDGER_FILE']
+ENV['HOME'] = ''
 
 get '/version' do
   { "version" => VERSION, "ledger-version" => %x[#{LEDGER_BIN} --version | head -n1 | sed 's/^Ledger \\(.*\\), .*$/\\1/'].rstrip }.to_json
@@ -32,13 +33,23 @@ post '/budget' do
   ledger_budget params[:query]
 end
 
+get '/register' do
+  ledger_register ""
+end
+get '/register/:query' do
+  ledger_register params[:query]
+end
+post '/register' do
+  ledger_register params[:query]
+end
+
 helpers do
   def ledger(parameters)
     puts %Q[#{LEDGER_BIN} -f #{LEDGER_FILE} #{parameters}]
     %x[#{LEDGER_BIN} -f #{LEDGER_FILE} #{parameters}].rstrip
   end
 
-  def jsonify(s)
+  def jsonify_obj(s)
     result = "{"
     result += s
     result += "}" if result.end_with?(",")
@@ -47,15 +58,29 @@ helpers do
 
     return result
   end
+  def jsonify_array(s)
+    result = "{"
+    result += s
+    result += "]" if result.end_with?(",")
+    result += "}"
+    result.gsub!(",]", "]")
+
+    return result
+  end
 
   def ledger_balance(parameters)
-    parameters = "bal "+parameters
+    parameters = "balance "+parameters
     result = %Q["accounts": { #{ledger(parameters)}]
-    return jsonify(result)
+    return jsonify_obj(result)
   end
   def ledger_budget(parameters)
     parameters = "budget "+parameters
     result = %Q["accounts": { #{ledger(parameters)}]
-    return jsonify(result)
+    return jsonify_obj(result)
+  end
+  def ledger_register(parameters)
+    parameters = "register "+parameters
+    result = %Q<"postings": [ #{ledger(parameters)}>
+    return jsonify_array(result)
   end
 end

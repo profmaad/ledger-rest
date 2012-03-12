@@ -1,0 +1,3 @@
+--balance-format \"%(account)\": \"%(join(T))\",%/},\"total\": \"%(join(T))\"
+--budget-format \"%(account)\": { \"amount\": \"%(get_at(T, 0))\", \"budget\": \"%(-get_at(T, 1))\"},%/},\"total_amount\": \"%(get_at(T, 0))\", \"total_budget\": \"%(-get_at(T, 1))\"
+--register-format { "date": "%(date)", "value_date": "%(value_date)", "account": "%(account)", "payee": "%(payee)", "amount": "%(join(t))", "T": "%(join(T))"},
