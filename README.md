@@ -13,4 +13,5 @@ ledger-rest is a REST webservice to access your ledger account data
 
 * ruby
   * sinatra
+  * escape
 * ledger
