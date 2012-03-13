@@ -10,7 +10,7 @@ if development?
   settings.bind = "127.0.0.1"
 end
 
-VERSION = "0.0"
+VERSION = "1.0"
 LEDGER_BIN = "/usr/bin/ledger"
 LEDGER_FILE = ENV['LEDGER_FILE']
 ENV['HOME'] = ''
