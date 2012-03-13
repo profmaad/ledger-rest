@@ -1,8 +1,14 @@
 require 'rubygems'
 require 'json'
+require 'escape'
 
 require 'sinatra'
-require 'sinatra/reloader' if development?
+
+if development?
+  require 'sinatra/reloader'
+
+  settings.bind = "127.0.0.1"
+end
 
 VERSION = "0.0"
 LEDGER_BIN = "/usr/bin/ledger"
@@ -45,6 +51,7 @@ end
 
 helpers do
   def ledger(parameters)
+    parameters = Escape.shell_command(parameters.split(' '))
     puts %Q[#{LEDGER_BIN} -f #{LEDGER_FILE} #{parameters}]
     %x[#{LEDGER_BIN} -f #{LEDGER_FILE} #{parameters}].rstrip
   end
@@ -52,7 +59,7 @@ helpers do
   def jsonify_obj(s)
     result = "{"
     result += s
-    result += "}" if result.end_with?(",")
+    result += "}" if (result.end_with?(",") or result.end_with?(" "))
     result += "}"
     result.gsub!(",}", "}")
 
@@ -61,7 +68,7 @@ helpers do
   def jsonify_array(s)
     result = "{"
     result += s
-    result += "]" if result.end_with?(",")
+    result += "]" if (result.end_with?(",") or result.end_with?(" "))
     result += "}"
     result.gsub!(",]", "]")
 
