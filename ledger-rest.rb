@@ -49,6 +49,10 @@ post '/register' do
   ledger_register params[:query]
 end
 
+get '/accounts' do
+  ledger_accounts
+end
+
 helpers do
   def ledger(parameters)
     parameters = Escape.shell_command(parameters.split(' '))
@@ -89,5 +93,9 @@ helpers do
     parameters = "register "+parameters
     result = %Q<"postings": [ #{ledger(parameters)}>
     return jsonify_array(result)
+  end
+  def ledger_accounts
+    accounts = ledger("accounts").split("\n")
+    return {"accounts" => accounts}.to_json
   end
 end
