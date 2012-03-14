@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'json'
+require 'shellwords'
 require 'escape'
 
 require 'sinatra/base'
@@ -56,7 +57,7 @@ class LedgerRest < Sinatra::Base
 
   helpers do
     def ledger(parameters)
-      parameters = Escape.shell_command(parameters.split(' '))
+      parameters = Escape.shell_command(parameters.shellsplit)
       puts %Q[#{LEDGER_BIN} -f #{LEDGER_FILE} #{parameters}]
       %x[#{LEDGER_BIN} -f #{LEDGER_FILE} #{parameters}].rstrip
     end
