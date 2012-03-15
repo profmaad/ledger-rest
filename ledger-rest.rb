@@ -52,7 +52,13 @@ class LedgerRest < Sinatra::Base
   end
 
   get '/accounts' do
-    ledger_accounts
+    ledger_accounts ""
+  end
+  get '/accounts/:query' do
+    ledger_accounts params[:query]
+  end
+  post '/accounts' do
+    ledger_accounts params[:query]
   end
 
   helpers do
@@ -96,8 +102,9 @@ class LedgerRest < Sinatra::Base
       result = %Q<"postings": [ #{ledger(parameters)}>
         return jsonify_array(result)
     end
-    def ledger_accounts
-      accounts = ledger("accounts").split("\n")
+    def ledger_accounts(parameters)
+      parameters = "accounts "+parameters
+      accounts = ledger(parameters).split("\n")
       return {"accounts" => accounts}.to_json
     end
   end
