@@ -9,7 +9,7 @@ require 'sinatra/base'
 class LedgerRest < Sinatra::Base
   VERSION = "1.0"
 
-  CONFIG_FILE = "ledger-rest.yaml"
+  CONFIG_FILE = "ledger-rest.yml"
 
   set :ledger_bin, "/usr/bin/ledger"
   set :ledger_file, ENV['LEDGER_FILE']
