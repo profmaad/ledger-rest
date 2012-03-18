@@ -1,24 +1,37 @@
 require 'rubygems'
 require 'json'
+require 'yaml'
 require 'shellwords'
 require 'escape'
 
 require 'sinatra/base'
 
 class LedgerRest < Sinatra::Base
-  if development?
-    require 'sinatra/reloader'
-    
-    settings.bind = "127.0.0.1"
+  VERSION = "1.0"
+
+  CONFIG_FILE = "ledger-rest.yaml"
+
+  set :ledger_bin, "/usr/bin/ledger"
+  set :ledger_file, ENV['LEDGER_FILE']
+  set :ledger_home, ''
+  
+  configure do |c|
+    config = {}
+    begin
+      config = YAML.load_file(CONFIG_FILE)
+    rescue
+      puts "Failed to load config file" if config.nil?
+    end
+
+    config.each do |key,value|
+      set key.to_sym, value
+    end
+
+    ENV['HOME'] = settings.ledger_home
   end
 
-  VERSION = "1.0"
-  LEDGER_BIN = "/usr/bin/ledger"
-  LEDGER_FILE = ENV['LEDGER_FILE']
-  ENV['HOME'] = ''
-  
   get '/version' do
-    { "version" => VERSION, "ledger-version" => %x[#{LEDGER_BIN} --version | head -n1 | sed 's/^Ledger \\(.*\\), .*$/\\1/'].rstrip }.to_json
+    { "version" => VERSION, "ledger-version" => %x[#{settings.ledger_bin} --version | head -n1 | sed 's/^Ledger \\(.*\\), .*$/\\1/'].rstrip }.to_json
   end
   
   get '/balance' do
@@ -64,8 +77,8 @@ class LedgerRest < Sinatra::Base
   helpers do
     def ledger(parameters)
       parameters = Escape.shell_command(parameters.shellsplit)
-      puts %Q[#{LEDGER_BIN} -f #{LEDGER_FILE} #{parameters}]
-      %x[#{LEDGER_BIN} -f #{LEDGER_FILE} #{parameters}].rstrip
+      puts %Q[#{settings.ledger_bin} -f #{settings.ledger_file} #{parameters}]
+      %x[#{settings.ledger_bin} -f #{settings.ledger_file} #{parameters}].rstrip
     end
 
     def jsonify_obj(s)
