@@ -16,6 +16,7 @@ class LedgerRest < Sinatra::Base
 
   set :ledger_bin, "/usr/bin/ledger"
   set :ledger_file, ENV['LEDGER_FILE']
+  set :ledger_append_file, ENV['LEDGER_FILE']
   set :ledger_home, ''
   
   configure do |c|
@@ -23,7 +24,7 @@ class LedgerRest < Sinatra::Base
     begin
       config = YAML.load_file(CONFIG_FILE)
     rescue
-      puts "Failed to load config file" if config.nil?
+      puts "Failed to load config file"
     end
 
     config.each do |key,value|
@@ -75,14 +76,28 @@ class LedgerRest < Sinatra::Base
 
   post '/transactions' do
     begin
-#      transaction = JSON.parse(params[:transaction], :symbolize_names => true)
-      transaction = TEST_TRANSACTION
+      transaction = JSON.parse(params[:transaction], :symbolize_names => true)
 
       transaction_string = transaction_to_ledger(transaction)
-      return [400, "Invalid transaction: verification failed\n"] unless verify_transaction(transaction_string)
-      puts "A-OK"
+      raise "Verification error" unless verify_transaction(transaction_string)
+
+      File.open(settings.ledger_append_file, "a+") do |f|
+        if f.pos == 0
+          last_char = "\n"
+        else
+          f.pos = f.pos-1
+          last_char = f.getc
+        end
+
+        f.write "\n" unless last_char == "\n"
+        f.write(transaction_string)
+      end
+
+      [200, "Transaction added successfully\n"]
     rescue JSON::ParserError => e
       [400, "Invalid transaction: '#{e.to_s}'\n"]
+    rescue RuntimeError => e
+      [400, "Adding the transaction failed: '#{e.to_s}'\n"]
     end
   end
 
@@ -144,6 +159,14 @@ class LedgerRest < Sinatra::Base
     end
 
     def transaction_to_ledger(transaction)
+      if(
+         transaction[:date].nil? or
+         transaction[:payee].nil? or
+         transaction[:postings].nil?
+         )
+        return nil
+      end
+
       result = ""
       
       result += transaction[:date]
@@ -164,6 +187,8 @@ class LedgerRest < Sinatra::Base
           result += "  ; "+posting+"\n"
           next
         end
+
+        next if posting[:account].nil?
 
         result += "  "
         result += posting[:account]
