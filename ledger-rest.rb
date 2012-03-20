@@ -39,37 +39,20 @@ class LedgerRest < Sinatra::Base
   end
   
   get '/balance/?:query?' do
-    ledger_balance params[:query]
+    ledger_json("balance", "accounts", params[:query], :object)
   end
-  post '/balance' do
-    ledger_balance params[:query]
-  end
-
   get '/budget/?:query?' do
-    ledger_budget params[:query]
+    ledger_json("budget", "accounts", params[:query], :object)
   end
-  post '/budget' do
-    ledger_budget params[:query]
-  end
-
   get '/register/?:query?' do
-    ledger_register params[:query]
-  end
-  post '/register' do
-    ledger_register params[:query]
+    ledger_json("register", "postings", params[:query], :array)
   end
 
   get '/accounts/?:query?' do
-    ledger_accounts params[:query]
-  end
-  post '/accounts' do
-    ledger_accounts params[:query]
+    ledger_json("accounts", "accounts", params[:query], :list)
   end
   get '/payees/?:query?' do
-    ledger_payees params[:query]
-  end
-  post '/payees' do
-    ledger_payees params[:query]
+    ledger_json("payees", "payees", params[:query], :list)
   end
 
   helpers do
@@ -79,7 +62,7 @@ class LedgerRest < Sinatra::Base
       %x[#{settings.ledger_bin} -f #{settings.ledger_file} #{parameters}].rstrip
     end
 
-    def jsonify_obj(s)
+    def jsonify_object(s)
       result = "{"
       result += s
       result += "}" if (result.end_with?(",") or result.end_with?(" "))
@@ -98,30 +81,25 @@ class LedgerRest < Sinatra::Base
       return result
     end
 
-    def ledger_balance(parameters)
-      parameters = "balance "+parameters
-      result = %Q["accounts": { #{ledger(parameters)}]
-      return jsonify_obj(result)
-    end
-    def ledger_budget(parameters)
-      parameters = "budget "+parameters
-      result = %Q["accounts": { #{ledger(parameters)}]
-      return jsonify_obj(result)
-    end
-    def ledger_register(parameters)
-      parameters = "register "+parameters
-      result = %Q<"postings": [ #{ledger(parameters)}>
-        return jsonify_array(result)
-    end
-    def ledger_accounts(parameters)
-      parameters = "accounts "+parameters
-      accounts = ledger(parameters).split("\n")
-      return {"accounts" => accounts}.to_json
-    end
-    def ledger_payees(parameters)
-      parameters = "payees "+parameters
-      payees = ledger(parameters).split("\n")
-      return {"payees" => payees}.to_json
+    def ledger_json(command, key, parameters, type=:object)
+      parameters = command + " " + parameters
+      result = case type
+               when :object
+                 %Q["#{key}": { #{ledger(parameters)}]
+               when :array
+                 %Q<"#{key}": [ #{ledger(parameters)}>
+               when :list
+                 ledger(parameters).split("\n")
+               end
+
+      return case type
+             when :object
+               jsonify_object(result)
+             when :array
+               jsonify_array(result)
+             when :list
+               {key => result}.to_json
+             end
     end
   end
 end
