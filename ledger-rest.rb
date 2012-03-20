@@ -73,6 +73,15 @@ class LedgerRest < Sinatra::Base
   post '/accounts' do
     ledger_accounts params[:query]
   end
+  get '/payees' do
+    ledger_payees ""
+  end
+  get '/payees/:query' do
+    ledger_payees params[:query]
+  end
+  post '/payees' do
+    ledger_payees params[:query]
+  end
 
   helpers do
     def ledger(parameters)
@@ -119,6 +128,11 @@ class LedgerRest < Sinatra::Base
       parameters = "accounts "+parameters
       accounts = ledger(parameters).split("\n")
       return {"accounts" => accounts}.to_json
+    end
+    def ledger_payees(parameters)
+      parameters = "payees "+parameters
+      payees = ledger(parameters).split("\n")
+      return {"payees" => payees}.to_json
     end
   end
 end
