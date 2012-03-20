@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'rubygems'
 require 'json'
 require 'yaml'
@@ -53,6 +54,29 @@ class LedgerRest < Sinatra::Base
   end
   get '/payees/?:query?' do
     ledger_json("payees", "payees", params[:query], :list)
+  end
+
+  TEST_TRANSACTION = {
+    :date => "2012/03/01",
+    :effective_date => "2012/03/23",
+    :cleared => true,
+    :pending => false,
+    :code => "INV#23",
+    :payee => "me, myself and I",
+    :postings => [
+                  {:account => "Expenses:Imaginary", :amount => "€ 23", :per_unit_cost => "USD 2300", :actual_date => "2012/03/24", :effective_date => "2012/03/25"},
+                  {:account => "Expenses:Magical", :amount => "€ 42", :posting_cost => "USD 23000000"},
+                  "This is a freeform comment"
+                 ]
+  }
+
+  post '/transactions' do
+    begin
+      transaction = JSON.parse(params[:transaction], :symbolize_names => true)
+      puts "adding transaction: #{transaction}"
+    rescue JSON::ParserError => e
+      [400, "Invalid transaction: '#{e.to_s}'\n"]
+    end
   end
 
   helpers do
