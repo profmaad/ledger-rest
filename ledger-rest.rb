@@ -12,6 +12,8 @@ class LedgerRest < Sinatra::Base
 
   CONFIG_FILE = "ledger-rest.yml"
 
+  DATE_REGEXP = /^\d{4}\/\d{1,2}\/\d{1,2}$/
+
   set :ledger_bin, "/usr/bin/ledger"
   set :ledger_file, ENV['LEDGER_FILE']
   set :ledger_home, ''
@@ -73,6 +75,8 @@ class LedgerRest < Sinatra::Base
   post '/transactions' do
     begin
       transaction = JSON.parse(params[:transaction], :symbolize_names => true)
+      return [400, "Transaction failed verification\n"] unless verify_transaction(transaction)
+
       puts "adding transaction: #{transaction}"
     rescue JSON::ParserError => e
       [400, "Invalid transaction: '#{e.to_s}'\n"]
@@ -124,6 +128,43 @@ class LedgerRest < Sinatra::Base
              when :list
                {key => result}.to_json
              end
+    end
+    
+    def verify_transaction(transaction)
+      unless(
+             transaction[:date] =~ DATE_REGEXP and
+             (transaction[:effective_date].nil? or transaction[:effective_date] =~ DATE_REGEXP) and
+             (transaction[:code].nil? or !(transaction[:code] =~ /[()\n]/)) and
+             !(transaction[:payee] =~ /\n/) and
+             !(transaction[:postings].nil? or transaction[:postings].empty?)
+             )
+        return false
+      end
+
+      posting_without_amount = false
+      transaction[:postings].each do |posting|
+        if(
+           posting[:account].nil? or
+           posting[:account].empty? or
+           posting[:account] =~ /  / or
+           posting[:account] =~ /\n/ or
+           (!posting[:amount].nil? and posting[:amount] =~ /\n/) or
+           (!posting[:per_unit_cost].nil? and posting[:per_unit_cost] =~ /\n/) or
+           (!posting[:posting_cost].nil? and posting[:posting_cost] =~ /\n/) or
+           (!posting[:actual_date].nil? and posting[:actual_date] =~ DATE_REGEXP) or
+           (!posting[:effective_date].nil? and posting[:effective_date] =~ DATE_REGEXP)
+           )
+          return false
+        end
+
+        if(posting[:account].nil? and posting_without_amount)
+          return false
+        elsif(posting[:account].nil?)
+          posting_without_amount = true
+        end
+      end
+
+      return true
     end
   end
 end
