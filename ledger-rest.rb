@@ -30,53 +30,42 @@ class LedgerRest < Sinatra::Base
     ENV['HOME'] = settings.ledger_home
   end
 
+  before do
+    params[:query] = "" if params[:query].nil?
+  end
+
   get '/version' do
     { "version" => VERSION, "ledger-version" => %x[#{settings.ledger_bin} --version | head -n1 | sed 's/^Ledger \\(.*\\), .*$/\\1/'].rstrip }.to_json
   end
   
-  get '/balance' do
-    ledger_balance ""
-  end
-  get '/balance/:query' do
+  get '/balance/?:query?' do
     ledger_balance params[:query]
   end
   post '/balance' do
     ledger_balance params[:query]
   end
 
-  get '/budget' do
-    ledger_budget ""
-  end
-  get '/budget/:query' do
+  get '/budget/?:query?' do
     ledger_budget params[:query]
   end
   post '/budget' do
     ledger_budget params[:query]
   end
 
-  get '/register' do
-    ledger_register ""
-  end
-  get '/register/:query' do
+  get '/register/?:query?' do
     ledger_register params[:query]
   end
   post '/register' do
     ledger_register params[:query]
   end
 
-  get '/accounts' do
-    ledger_accounts ""
-  end
-  get '/accounts/:query' do
+  get '/accounts/?:query?' do
     ledger_accounts params[:query]
   end
   post '/accounts' do
     ledger_accounts params[:query]
   end
-  get '/payees' do
-    ledger_payees ""
-  end
-  get '/payees/:query' do
+  get '/payees/?:query?' do
     ledger_payees params[:query]
   end
   post '/payees' do
