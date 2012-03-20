@@ -67,17 +67,20 @@ class LedgerRest < Sinatra::Base
     :payee => "me, myself and I",
     :postings => [
                   {:account => "Expenses:Imaginary", :amount => "€ 23", :per_unit_cost => "USD 2300", :actual_date => "2012/03/24", :effective_date => "2012/03/25"},
-                  {:account => "Expenses:Magical", :amount => "€ 42", :posting_cost => "USD 23000000"},
+                  {:account => "Expenses:Magical", :amount => "€ 42", :posting_cost => "USD 23000000", :virtual => true},
+                  {:account => "Assets:Mighty"},
                   "This is a freeform comment"
                  ]
   }
 
   post '/transactions' do
     begin
-      transaction = JSON.parse(params[:transaction], :symbolize_names => true)
-      return [400, "Transaction failed verification\n"] unless verify_transaction(transaction)
+#      transaction = JSON.parse(params[:transaction], :symbolize_names => true)
+      transaction = TEST_TRANSACTION
 
-      puts "adding transaction: #{transaction}"
+      transaction_string = transaction_to_ledger(transaction)
+      return [400, "Invalid transaction: verification failed\n"] unless verify_transaction(transaction_string)
+      puts "A-OK"
     rescue JSON::ParserError => e
       [400, "Invalid transaction: '#{e.to_s}'\n"]
     end
@@ -130,41 +133,67 @@ class LedgerRest < Sinatra::Base
              end
     end
     
-    def verify_transaction(transaction)
-      unless(
-             transaction[:date] =~ DATE_REGEXP and
-             (transaction[:effective_date].nil? or transaction[:effective_date] =~ DATE_REGEXP) and
-             (transaction[:code].nil? or !(transaction[:code] =~ /[()\n]/)) and
-             !(transaction[:payee] =~ /\n/) and
-             !(transaction[:postings].nil? or transaction[:postings].empty?)
-             )
-        return false
+    def verify_transaction(transaction_string)
+      result = IO.popen("#{settings.ledger_bin} -f - stats 2>&1", "r+") do |f|
+        f.write transaction_string
+        f.close_write
+        f.readlines
       end
 
-      posting_without_amount = false
+      return ($?.success? and not result.empty?)
+    end
+
+    def transaction_to_ledger(transaction)
+      result = ""
+      
+      result += transaction[:date]
+      result += "="+transaction[:effective_date] unless transaction[:effective_date].nil?
+      
+      if transaction[:cleared]
+        result += " *"
+      elsif transaction[:pending]
+        result += " !"
+      end
+
+      result += " ("+transaction[:code]+")" unless transaction[:code].nil?
+      result += " "+transaction[:payee]
+      result += "\n"
+
       transaction[:postings].each do |posting|
-        if(
-           posting[:account].nil? or
-           posting[:account].empty? or
-           posting[:account] =~ /  / or
-           posting[:account] =~ /\n/ or
-           (!posting[:amount].nil? and posting[:amount] =~ /\n/) or
-           (!posting[:per_unit_cost].nil? and posting[:per_unit_cost] =~ /\n/) or
-           (!posting[:posting_cost].nil? and posting[:posting_cost] =~ /\n/) or
-           (!posting[:actual_date].nil? and posting[:actual_date] =~ DATE_REGEXP) or
-           (!posting[:effective_date].nil? and posting[:effective_date] =~ DATE_REGEXP)
-           )
-          return false
+        if(posting.class == String)
+          result += "  ; "+posting+"\n"
+          next
         end
 
-        if(posting[:account].nil? and posting_without_amount)
-          return false
-        elsif(posting[:account].nil?)
-          posting_without_amount = true
+        result += "  "
+        result += posting[:account]
+        
+        if posting[:amount].nil?
+          result += "\n"
+          next
         end
+
+        result += "  "+posting[:amount]
+
+        if(posting[:per_unit_cost])
+          result += " @ "+posting[:per_unit_cost]
+        elsif(posting[:posting_cost])
+          result += " @@ "+posting[:posting_cost]
+        end
+
+        unless(posting[:actual_date].nil? and posting[:effective_date].nil?)
+          result += "  ; ["
+          result += posting[:actual_date] unless posting[:actual_date].nil?
+          result += "="+posting[:effective_date] unless posting[:effective_date].nil?
+          result += "]"
+        end
+
+        result += "\n"
       end
 
-      return true
+      result += "\n"
+      
+      return result
     end
   end
 end
