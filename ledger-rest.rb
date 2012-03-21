@@ -21,10 +21,12 @@ class LedgerRest < Sinatra::Base
   set :ledger_append_file, ENV['LEDGER_FILE']
   set :ledger_home, ''
   set :git_repository, File.dirname(settings.ledger_file)
+  set :git_pull_before_read, false
   set :git_pull_before_write, false
   set :git_push_after_write, false
   set :git_remote, 'origin'
   set :git_branch, 'master'
+  set :git_read_pull_block_time, 10*60
   
   configure do |c|
     config = {}
@@ -46,6 +48,7 @@ class LedgerRest < Sinatra::Base
         @@git_repo = Git.open(settings.git_repository)
         FileUtils.touch(settings.ledger_append_file)
         @@git_repo.add(settings.ledger_append_file)
+        @@last_read_pull = Time.new-settings.git_read_pull_block_time
       rescue Exception => e
         puts "Failed to open git repo at '#{settings.git_repository}': #{e.to_s }"
         settings.git_pull_before_write = false
@@ -128,6 +131,14 @@ class LedgerRest < Sinatra::Base
 
   helpers do
     def ledger(parameters)
+      if(settings.git_pull_before_read && (Time.new-@@last_read_pull) > settings.git_read_pull_block_time)
+        begin
+          @@git_repo.pull(settings.git_remote, settings.git_branch)
+          @@last_read_pull = Time.new
+        rescue Exception => e
+          puts "Git pull failed: "+e.to_s
+        end
+      end
       parameters = Escape.shell_command(parameters.shellsplit)
       puts %Q[#{settings.ledger_bin} -f #{settings.ledger_file} #{parameters}]
       %x[#{settings.ledger_bin} -f #{settings.ledger_file} #{parameters}].rstrip
