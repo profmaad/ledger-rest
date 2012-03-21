@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 require 'rubygems'
+require 'fileutils'
 require 'json'
 require 'yaml'
 require 'shellwords'
 require 'escape'
+require 'git'
 
 require 'sinatra/base'
 
@@ -18,6 +20,11 @@ class LedgerRest < Sinatra::Base
   set :ledger_file, ENV['LEDGER_FILE']
   set :ledger_append_file, ENV['LEDGER_FILE']
   set :ledger_home, ''
+  set :git_repository, File.dirname(settings.ledger_file)
+  set :git_pull_before_write, false
+  set :git_push_after_write, false
+  set :git_remote, 'origin'
+  set :git_branch, 'master'
   
   configure do |c|
     config = {}
@@ -32,6 +39,19 @@ class LedgerRest < Sinatra::Base
     end
 
     ENV['HOME'] = settings.ledger_home
+    set :git_repository, File.dirname(settings.ledger_file)
+
+    if(settings.git_push_after_write || settings.git_push_after_write)
+      begin
+        @@git_repo = Git.open(settings.git_repository)
+        FileUtils.touch(settings.ledger_append_file)
+        @@git_repo.add(settings.ledger_append_file)
+      rescue Exception => e
+        puts "Failed to open git repo at '#{settings.git_repository}': #{e.to_s }"
+        settings.git_pull_before_write = false
+        settings.git_push_after_write  = false
+      end
+    end
   end
 
   before do
@@ -81,6 +101,7 @@ class LedgerRest < Sinatra::Base
       transaction_string = transaction_to_ledger(transaction)
       raise "Verification error" unless verify_transaction(transaction_string)
 
+      @@git_repo.pull(settings.git_remote, settings.git_branch) if settings.git_pull_before_write
       File.open(settings.ledger_append_file, "a+") do |f|
         if f.pos == 0
           last_char = "\n"
@@ -91,6 +112,10 @@ class LedgerRest < Sinatra::Base
 
         f.write "\n" unless last_char == "\n"
         f.write(transaction_string)
+      end
+      if(settings.git_push_after_write)
+        @@git_repo.commit_all("transaction added via ledger-rest")
+        @@git_repo.push(settings.git_remote, settings.git_branch)
       end
 
       [200, "Transaction added successfully\n"]
