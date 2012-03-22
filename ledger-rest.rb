@@ -36,12 +36,14 @@ class LedgerRest < Sinatra::Base
       puts "Failed to load config file"
     end
 
+    git_repository_set_in_config = false
     config.each do |key,value|
       set key.to_sym, value
+      get_repository_set_in_config = true if(key.to_sym == :git_repository)
     end
 
     ENV['HOME'] = settings.ledger_home
-    set :git_repository, File.dirname(settings.ledger_file)
+    set :git_repository, File.dirname(settings.ledger_file) unless git_repository_set_in_config
 
     if(settings.git_push_after_write || settings.git_push_after_write)
       begin
