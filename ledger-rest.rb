@@ -123,11 +123,11 @@ class LedgerRest < Sinatra::Base
         @@git_repo.push(settings.git_remote, settings.git_branch)
       end
 
-      [200, "Transaction added successfully\n"]
+      [200, {:error => false, :message => "Transaction added successfully\n"}.to_json]
     rescue JSON::ParserError => e
-      [400, "Invalid transaction: '#{e.to_s}'\n"]
+      [400, {:error => true, :message => "Invalid transaction: '#{e.to_s}'\n"}.to_json]
     rescue RuntimeError => e
-      [400, "Adding the transaction failed: '#{e.to_s}'\n"]
+      [400, {:error => true, :message => "Adding the transaction failed: '#{e.to_s}'\n"}.to_json]
     end
   end
 
