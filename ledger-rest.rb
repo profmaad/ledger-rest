@@ -95,7 +95,7 @@ class LedgerRest < Sinatra::Base
                   {:account => "Expenses:Imaginary", :amount => "€ 23", :per_unit_cost => "USD 2300", :actual_date => "2012/03/24", :effective_date => "2012/03/25"},
                   {:account => "Expenses:Magical", :amount => "€ 42", :posting_cost => "USD 23000000", :virtual => true},
                   {:account => "Assets:Mighty"},
-                  "This is a freeform comment"
+                  {:comment => "This is a freeform comment"},
                  ]
   }
 
@@ -221,8 +221,8 @@ class LedgerRest < Sinatra::Base
       result += "\n"
 
       transaction[:postings].each do |posting|
-        if(posting.class == String)
-          result += "  ; "+posting+"\n"
+        if(posting[:comment])
+          result += "  ; "+posting[:comment]+"\n"
           next
         end
 
