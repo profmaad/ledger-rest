@@ -1,13 +1,29 @@
+# -*- coding: utf-8 -*-
 module LedgerRest
   class Ledger
     class Transaction < Hash
+
+      EXAMPLE_TRANSACTION = {
+        :date => "2012/03/01",
+        :effective_date => "2012/03/23",
+        :cleared => true,
+        :pending => false,
+        :code => "INV#23",
+        :payee => "me, myself and I",
+        :postings => [
+                      {:account => "Expenses:Imaginary", :amount => "€ 23", :per_unit_cost => "USD 2300", :actual_date => "2012/03/24", :effective_date => "2012/03/25"},
+                      {:account => "Expenses:Magical", :amount => "€ 42", :posting_cost => "USD 23000000", :virtual => true},
+                      {:account => "Assets:Mighty"},
+                      {:comment => "This is a freeform comment"},
+                     ]
+      }
 
       # Create a new transaction and append it to the append file.
       def self.create(params)
 
       end
 
-      def verify
+      def valid?
         result = IO.popen("#{settings.ledger_bin} -f - stats 2>&1", "r+") do |f|
           f.write self.to_ledger
           f.close_write

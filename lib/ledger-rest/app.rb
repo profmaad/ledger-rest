@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 require 'ledger-rest/ledger'
+require 'ledger-rest/ledger/balance'
+require 'ledger-rest/ledger/transaction'
+require 'ledger-rest/ledger/register'
+require 'ledger-rest/ledger/budget'
 require 'ledger-rest/git'
 require 'ledger-rest/core_ext'
 
@@ -33,17 +37,17 @@ module LedgerRest
 
     get '/balance/?:query?' do
       content_type :json
-      Ledger.balance(params[:query]).to_json
+      Ledger::Balance.json(params[:query])
     end
 
     get '/budget/?:query?' do
       content_type :json
-      Ledger.budget(params[:query]).to_json
+      Ledger::Budget.json(params[:query])
     end
 
     get '/register/?:query?' do
       content_type :json
-      Ledger.register(params[:query]).to_json
+      Ledger::Register.json(params[:query])
     end
 
     get '/accounts/?:query?' do
