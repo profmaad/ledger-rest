@@ -10,5 +10,5 @@ Bundler.require
 require 'ledger-rest/app'
 
 module LedgerRest
-  VERSION = "1.0"
+  VERSION = "2.0"
 end
