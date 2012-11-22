@@ -1,5 +1,5 @@
-$: << "."
+$: << "./lib"
 
-require 'ledger-rest.rb'
+require 'ledger-rest'
 
-run LedgerRest
+run LedgerRest::App
