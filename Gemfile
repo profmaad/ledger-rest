@@ -4,6 +4,9 @@ gem "escape"
 gem "sinatra"
 gem "git"
 
-group :dev do
+group :development do
   gem "pry"
+  gem "rspec"
+  gem "rb-inotify"
+  gem "guard-rspec"
 end

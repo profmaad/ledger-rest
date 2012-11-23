@@ -18,11 +18,20 @@ module LedgerRest
                      ]
       }
 
-      # Create a new transaction and append it to the append file.
-      def self.create(params)
+      class << self
+
+        # Parse a ledger transaction string into a `Transaction` object.
+        def parse(str)
+          LedgerRest::Ledger::Parser.parse(str)
+        end
 
       end
 
+      def initialize(params = {})
+
+      end
+
+      # Return true if the `Transaction#to_ledger` is a valid ledger string.
       def valid?
         result = IO.popen("#{settings.ledger_bin} -f - stats 2>&1", "r+") do |f|
           f.write self.to_ledger

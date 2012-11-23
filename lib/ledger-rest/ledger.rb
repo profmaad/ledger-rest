@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+require 'ledger-rest/ledger/parser'
+
 module LedgerRest
   class Ledger
     class << self
