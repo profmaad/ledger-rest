@@ -3,21 +3,6 @@ module LedgerRest
   class Ledger
     class Transaction < Hash
 
-      EXAMPLE_TRANSACTION = {
-        :date => "2012/03/01",
-        :effective_date => "2012/03/23",
-        :cleared => true,
-        :pending => false,
-        :code => "INV#23",
-        :payee => "me, myself and I",
-        :postings => [
-                      {:account => "Expenses:Imaginary", :amount => "€ 23", :per_unit_cost => "USD 2300", :actual_date => "2012/03/24", :effective_date => "2012/03/25"},
-                      {:account => "Expenses:Magical", :amount => "€ 42", :posting_cost => "USD 23000000", :virtual => true},
-                      {:account => "Assets:Mighty"},
-                      {:comment => "This is a freeform comment"},
-                     ]
-      }
-
       class << self
 
         # Parse a ledger transaction string into a `Transaction` object.
@@ -28,7 +13,7 @@ module LedgerRest
       end
 
       def initialize(params = {})
-
+        self.merge!(params)
       end
 
       # Return true if the `Transaction#to_ledger` is a valid ledger string.
@@ -43,66 +28,71 @@ module LedgerRest
       end
 
       def to_ledger
-        if(
-           transaction[:date].nil? or
-           transaction[:payee].nil? or
-           transaction[:postings].nil?
-           )
+        if self[:date].nil? or
+            self[:payee].nil? or
+            self[:postings].nil?
           return nil
         end
 
         result = ""
 
-        result += transaction[:date]
-        result += "="+transaction[:effective_date] unless transaction[:effective_date].nil?
+        result << self[:date]
+        result << "=#{self[:effective_date]}" if self[:effective_date]
 
-        if transaction[:cleared]
-          result += " *"
-        elsif transaction[:pending]
-          result += " !"
+        if self[:cleared]
+          result << " *"
+        elsif self[:pending]
+          result << " !"
         end
 
-        result += " ("+transaction[:code]+")" unless transaction[:code].nil?
-        result += " "+transaction[:payee]
-        result += "\n"
+        result << " (#{self[:code]})" if self[:code]
+        result << " #{self[:payee]}"
+        result << "\n"
 
-        transaction[:postings].each do |posting|
-          if(posting[:comment])
-            result += "  ; "+posting[:comment]+"\n"
+        self[:postings].each do |posting|
+          if posting[:comment]
+            result << "  ; #{posting[:comment]}\n"
             next
           end
 
-          next if posting[:account].nil?
+          next unless posting[:account]
 
-          result += "  "
-          result += posting[:account]
+          if posting[:virtual]
+            if posting[:balance]
+              result << "  [#{posting[:account]}]"
+            else
+              result << "  (#{posting[:account]})"
+            end
+          else
+            result << "  #{posting[:account]}"
+          end
 
           if posting[:amount].nil?
-            result += "\n"
+            result << "\n"
             next
           end
 
-          result += "  "+posting[:amount]
+          result << "  #{posting[:amount]}"
 
           if(posting[:per_unit_cost])
-            result += " @ "+posting[:per_unit_cost]
+            result << " @@ #{posting[:per_unit_cost]}"
           elsif(posting[:posting_cost])
-            result += " @@ "+posting[:posting_cost]
+            result << " @ #{posting[:posting_cost]}"
           end
 
-          unless(posting[:actual_date].nil? and posting[:effective_date].nil?)
-            result += "  ; ["
-            result += posting[:actual_date] unless posting[:actual_date].nil?
-            result += "="+posting[:effective_date] unless posting[:effective_date].nil?
-            result += "]"
+          if posting[:actual_date] or posting[:effective_date]
+            result << "  ; ["
+            result << posting[:actual_date] if posting[:actual_date]
+            result << "=#{posting[:effective_date]}" if posting[:effective_date]
+            result << "]"
           end
 
-          result += "\n"
+          result << "\n"
         end
 
-        result += "\n"
+        result << "\n"
 
-        return result
+        result
       end
     end
   end

@@ -40,8 +40,8 @@ module LedgerRest
         comments,str = parse_comments(str)
         @transaction[:comments] = comments if comments
 
-        while result = parse_posting(str)
-          posting, str = result
+        str.split("\n").each do |line|
+          posting = parse_posting(line)
           @transaction[:postings] << posting
         end
 
@@ -111,18 +111,23 @@ module LedgerRest
       # parses a ledger posting line
       def parse_posting(str)
         posting = {}
-        posting[:account], posting[:virtual], posting[:balanced], str = parse_account(str)
-        return nil if posting[:account].nil?
 
-        amount,posting_cost,per_unit_cost,str = parse_amount(str)
+        account, virtual, balanced, str = parse_account(str)
+        posting[:account] = account if account
+        posting[:virtual] = virtual if virtual
+        posting[:balanced] = balanced if balanced
+
+        amount, posting_cost, per_unit_cost, str = parse_amount(str)
         posting[:amount] = amount if amount
         posting[:posting_cost] = posting_cost if posting_cost
         posting[:per_unit_cost] = per_unit_cost if per_unit_cost
 
-        comments, str = parse_comments(str)
-        posting[:comments] = comments if comments
+        comment, actual_date, effective_date = parse_posting_comment(str)
+        posting[:comment] = comment if comment
+        posting[:actual_date] = actual_date if actual_date
+        posting[:effective_date] = effective_date if effective_date
 
-        [ posting, str ]
+        posting
       end
 
       def parse_account(str)
@@ -134,23 +139,34 @@ module LedgerRest
         elsif match = str.match(/\A +\[([\w:]+)\](\n|$|  )(.*)/m)
           [ match[1], true, true , match[3] ]
         else
-          raise "Error parsing account name for posting. #{str.inspect}"
+          [ nil, false, false, str ]
         end
       end
 
       def parse_amount(str)
-        if match = str.match(/\A(.*?)@@(.*?)(\n|$)(.*)/m)
+        if match = str.match(/\A(.*?)@@([^;]*?)(;(.*)|\n(.*)|$(.*))/m)
           amount = match[1].strip
-          [ amount.empty? ? nil : amount, nil, match[2].strip, match[4] ]
-        elsif match = str.match(/\A(.*?)@(.*?)(\n|$)(.*)/m)
+          [ amount.empty? ? nil : amount, nil, match[2].strip, match[3] ]
+        elsif match = str.match(/\A(.*?)@([^;]*)(;(.*)|\n(.*)|$(.*))/m)
           amount = match[1].strip
-          [ amount.empty? ? nil : amount, match[2].strip, nil, match[4] ]
-        elsif match = str.match(/\A(.*?)(\n|$)(.*)/m)
+          [ amount.empty? ? nil : amount, match[2].strip, nil, match[3] ]
+        elsif match = str.match(/\A([^;]*?)(;(.*)|\n(.*)|$(.*))/m)
           amount = match[1].strip
-          [ amount.empty? ? nil : amount, nil, nil, match[3] ]
+          [ amount.empty? ? nil : amount, nil, nil, match[2] ]
         end
       end
 
+      def parse_posting_comment(str)
+        comment, actual_date, effective_date = nil, nil, nil
+
+        if match = str.match(/\A *?; \[(.*)\]/)
+          actual_date, effective_date = match[1].split('=')
+        elsif match = str.match(/\A *?; (.*)/)
+          comment = match[1]
+        end
+
+        [ comment, actual_date, effective_date ]
+      end
     end
   end
 end

@@ -1,8 +1,43 @@
+# -*- coding: utf-8 -*-
 require 'spec_helper'
 
 describe LedgerRest::Ledger::Parser do
   before :all do
     @parser = LedgerRest::Ledger::Parser.new
+  end
+
+  context '#parse' do
+    subject {
+      LedgerRest::Ledger::Transaction.new(:date => "2012/03/01",
+                                          :effective_date => "2012/03/23",
+                                          :cleared => true,
+                                          :pending => false,
+                                          :code => "INV#23",
+                                          :payee => "me, myself and I",
+                                          :postings => [
+                                                        {
+                                                          :account => "Expenses:Imaginary",
+                                                          :amount => "€ 23",
+                                                          :per_unit_cost => "USD 2300",
+                                                          :actual_date => "2012/03/24",
+                                                          :effective_date => "2012/03/25"
+                                                        }, {
+                                                          :account => "Expenses:Magical",
+                                                          :amount => "€ 42",
+                                                          :posting_cost => "USD 23000000",
+                                                          :virtual => true
+                                                        }, {
+                                                          :account => "Assets:Mighty"
+                                                        }, {
+                                                          :comment => "This is a freeform comment"
+                                                        },
+                                                       ])
+    }
+
+    it 'should parse a to_ledger converted transaction into the same original hash' do
+      @parser.parse(subject.to_ledger).should == subject
+    end
+
   end
 
   context '#parse_date' do
@@ -309,12 +344,9 @@ describe LedgerRest::Ledger::Parser do
       subject { @parser.parse_posting("  Assets:Test:Account  123EUR\n  ; Some comment") }
 
       it 'should have parsed correctly' do
-        subject[0].should == {
+        subject.should == {
           :account => "Assets:Test:Account",
-          :virtual => false,
-          :balanced => false,
-          :amount => "123EUR",
-          :comments => "Some comment\n"
+          :amount => "123EUR"
         }
       end
     end
@@ -323,10 +355,8 @@ describe LedgerRest::Ledger::Parser do
       subject { @parser.parse_posting("  Assets:Test:Account") }
 
       it 'should have parsed correctly' do
-        subject[0].should == {
-          :account => "Assets:Test:Account",
-          :virtual => false,
-          :balanced => false
+        subject.should == {
+          :account => "Assets:Test:Account"
         }
       end
     end
