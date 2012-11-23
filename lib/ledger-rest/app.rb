@@ -60,13 +60,15 @@ module LedgerRest
     end
 
     # gets a potential new entry via the entry command
-    get '/transactions/entry/?:query?' do
-      "Not yet implemented!"
+    get '/transactions/entry/?:desc?' do
+      content_type :json
+      Ledger::Entry.get(params[:desc]).to_json
     end
 
     # creates a new entry based on the
     post '/transactions/entry/?:desc?' do
-      "Not yet implemented!"
+      content_type :json
+      Ledger::Entry.append(params[:desc]).to_json
     end
 
     get '/transactions/:meta' do
