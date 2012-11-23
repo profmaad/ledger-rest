@@ -13,8 +13,6 @@ module LedgerRest
   class App < Sinatra::Base
     CONFIG_FILE = "ledger-rest.yml"
 
-    DATE_REGEXP = /^\d{4}\/\d{1,2}\/\d{1,2}$/
-
     configure do |c|
       begin
         config = YAML.load_file(CONFIG_FILE)
