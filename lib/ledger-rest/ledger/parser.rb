@@ -31,10 +31,16 @@ module LedgerRest
         @transaction[:postings] = []
 
         @transaction[:date],str = parse_date(str)
-        @transaction[:effective_date],str = parse_effective_date(str)
+
+        effective_date, str = parse_effective_date(str)
+        @transaction[:effective_date] = effective_date if effective_date
+
         @transaction[:cleared],str = parse_cleared(str)
         @transaction[:pending],str = parse_pending(str)
-        @transaction[:code],str = parse_code(str)
+
+        code, str = parse_code(str)
+        @transaction[:code] = code if code
+
         @transaction[:payee],str = parse_payee(str)
 
         comments,str = parse_comments(str)
