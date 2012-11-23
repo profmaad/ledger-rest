@@ -68,6 +68,14 @@ module LedgerRest
       "Not yet implemented!"
     end
 
+    get '/transactions/:meta' do
+      "Not yet implemented!"
+    end
+
+    get '/transactions' do
+      "Not yet implemented!"
+    end
+
     post '/transactions' do
       content_type :json
       begin
@@ -100,5 +108,14 @@ module LedgerRest
         ]
       end
     end
+
+    put '/transactions/:meta' do
+
+    end
+
+    delete '/transactions/:meta' do
+
+    end
+
   end
 end
