@@ -5,10 +5,6 @@ describe LedgerRest::Ledger::Parser do
     @parser = LedgerRest::Ledger::Parser.new
   end
 
-  context '#parse' do
-    context ''
-  end
-
   context '#parse_date' do
     before :all do
       @ret = @parser.parse_date("2012/11/23 * Rest with\nAnd Stuff")

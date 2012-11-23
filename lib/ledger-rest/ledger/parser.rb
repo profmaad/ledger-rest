@@ -27,6 +27,7 @@ module LedgerRest
 
       # Begins to parse a whole
       def parse(str)
+        @str = str
         @transaction[:postings] = []
 
         @transaction[:date],str = parse_date(str)
@@ -36,7 +37,8 @@ module LedgerRest
         @transaction[:code],str = parse_code(str)
         @transaction[:payee],str = parse_payee(str)
 
-        @transaction[:comments],str = parse_comments(str)
+        comments,str = parse_comments(str)
+        @transaction[:comments] = comments if comments
 
         while result = parse_posting(str)
           posting, str = result
@@ -44,6 +46,9 @@ module LedgerRest
         end
 
         @transaction
+      rescue Exception => e
+        puts e
+        puts "In: \n#{@str}"
       end
 
       def parse_date(str)
@@ -107,6 +112,7 @@ module LedgerRest
       def parse_posting(str)
         posting = {}
         posting[:account], posting[:virtual], posting[:balanced], str = parse_account(str)
+        return nil if posting[:account].nil?
 
         amount,posting_cost,per_unit_cost,str = parse_amount(str)
         posting[:amount] = amount if amount
@@ -120,14 +126,15 @@ module LedgerRest
       end
 
       def parse_account(str)
-        if match = str.match(/\A +([\w:]+)(.*)/m)
-          [ match[1], false, false , match[2].lstrip ]
-        elsif match = str.match(/\A +\(([\w:]+)\)(.*)/m)
-          [ match[1], true, false , match[2].lstrip ]
-        elsif match = str.match(/\A +\[([\w:]+)\](.*)/m)
-          [ match[1], true, true , match[2].lstrip ]
+        return [] if str.nil? or str.empty?
+        if match = str.match(/\A +([\w:]+)(\n|$|  )(.*)/m)
+          [ match[1], false, false , match[3] ]
+        elsif match = str.match(/\A +\(([\w:]+)\)(\n|$|  )(.*)/m)
+          [ match[1], true, false , match[3] ]
+        elsif match = str.match(/\A +\[([\w:]+)\](\n|$|  )(.*)/m)
+          [ match[1], true, true , match[3] ]
         else
-          raise "Error parsing account name for posting."
+          raise "Error parsing account name for posting. #{str.inspect}"
         end
       end
 

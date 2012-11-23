@@ -4,6 +4,7 @@ require 'ledger-rest/ledger/balance'
 require 'ledger-rest/ledger/transaction'
 require 'ledger-rest/ledger/register'
 require 'ledger-rest/ledger/budget'
+require 'ledger-rest/ledger/entry'
 require 'ledger-rest/git'
 require 'ledger-rest/core_ext'
 
