@@ -62,13 +62,13 @@ module LedgerRest
     # gets a potential new entry via the entry command
     get '/transactions/entry/?:desc?' do
       content_type :json
-      Ledger::Entry.get(params[:desc]).to_json
+      { :transaction => Ledger::Entry.get(params[:desc]) }.to_json
     end
 
     # creates a new entry based on the
     post '/transactions/entry/?:desc?' do
       content_type :json
-      Ledger::Entry.append(params[:desc]).to_json
+      { :transaction => Ledger::Entry.append(params[:desc]) }.to_json
     end
 
     get '/transactions/:meta' do
