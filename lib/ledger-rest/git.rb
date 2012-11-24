@@ -1,3 +1,5 @@
+require 'git'
+
 module LedgerRest
   class Git
     class << self
