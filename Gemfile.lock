@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ledger-rest (2.0.2)
+    ledger-rest (2.0.3)
       escape
       git
       sinatra
