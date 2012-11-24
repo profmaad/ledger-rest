@@ -2,8 +2,13 @@
 ** DONE move responsibilities into classes
    CLOSED: [2012-11-22 Thu 19:03]
    - State "DONE"       from "TODO"       [2012-11-22 Thu 19:03]
-** TODO implement entry GET
-** TODO implement entry POST
+** DONE implement entry GET
+   CLOSED: [2012-11-24 Sat 01:26]
+   - State "DONE"       from "TODO"       [2012-11-24 Sat 01:26]
+** DONE implement entry POST
+   CLOSED: [2012-11-24 Sat 01:26]
+   - State "DONE"       from "TODO"       [2012-11-24 Sat 01:26]
+** NEXT implement ledger append
 ** TODO implement transactions GET method
    Get all transactions.
 ** TODO implement transactions POST method
