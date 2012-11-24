@@ -7,8 +7,5 @@ require 'bundler'
 
 Bundler.require
 
+require 'ledger-rest/version'
 require 'ledger-rest/app'
-
-module LedgerRest
-  VERSION = "2.0"
-end

@@ -1,0 +1,14 @@
+* TODO ledger-rest
+** DONE move responsibilities into classes
+   CLOSED: [2012-11-22 Thu 19:03]
+   - State "DONE"       from "TODO"       [2012-11-22 Thu 19:03]
+** TODO implement entry GET
+** TODO implement entry POST
+** TODO implement transactions GET method
+   Get all transactions.
+** TODO implement transactions POST method
+   Create a new transaction in the respective file.
+** TODO implement transactions PUT method
+   Modify a transaction in the respective file.
+** TODO implement transactions DELETE method
+   Remove a transaction from the respective file.
