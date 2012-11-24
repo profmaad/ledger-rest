@@ -24,6 +24,7 @@ GEM
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
+    rake (0.9.2.2)
     rb-inotify (0.8.8)
       ffi (>= 0.5.0)
     rspec (2.12.0)
@@ -50,6 +51,7 @@ DEPENDENCIES
   git
   guard-rspec
   pry
+  rake
   rb-inotify
   rspec
   sinatra
