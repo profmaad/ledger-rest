@@ -13,11 +13,4 @@ class Hash
     end
     self
   end
-
-  def inject acc, &block
-    self.each_pair do |key, val|
-      acc = block.call acc, key, val
-    end
-    acc
-  end
 end

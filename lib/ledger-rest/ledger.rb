@@ -15,15 +15,16 @@ module LedgerRest
       end
 
       # Execute ledger command with given parameters
-      def exec(cmd, params = {})
+      def exec(cmd, options = {})
         Git.invoke :before_read
 
-        params = {
+        options = {
           '-f' => @file
-        }.merge(params)
+        }.merge(options)
 
-        params = params.inject '' do |acc, key, val|
-          acc << " #{key} #{Escape.shell_single_word(val)}"
+        params = ""
+        options.each do |key, val|
+          params << " #{key} #{Escape.shell_single_word(val)}"
         end
 
         command = "#{bin} #{params} #{cmd}"
