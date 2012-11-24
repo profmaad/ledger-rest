@@ -9,6 +9,9 @@
    CLOSED: [2012-11-24 Sat 01:26]
    - State "DONE"       from "TODO"       [2012-11-24 Sat 01:26]
 ** NEXT implement ledger append
+** NEXT add error handling for execution of ledger commands
+** NEXT do not add null-fields to register export
+   e.g. `code` or `effective_date`
 ** TODO implement transactions GET method
    Get all transactions.
 ** TODO implement transactions POST method
