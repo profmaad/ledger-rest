@@ -8,10 +8,10 @@ module LedgerRest
       attr_accessor :rcfile, :bin, :file, :append_file, :home
 
       def configure(options)
-        @bin = options[:ledger_bin] || "/usr/bin/ledger"
-        @file = options[:ledger_file] || ENV['LEDGER_FILE']
-        @append_file = options[:ledger_append_file] || ENV['LEDGER_FILE']
-        @home = options[:ledger_home] || ''      # Return a budget representation
+        @bin = options[:ledger_bin] || '/usr/bin/ledger'
+        @file = options[:ledger_file] || ENV['LEDGER_FILE'] || 'main.ledger'
+        @append_file = options[:ledger_append_file] || ENV['LEDGER_FILE'] || 'append.ledger'
+        @home = options[:ledger_home] || ''
       end
 
       # Execute ledger command with given parameters

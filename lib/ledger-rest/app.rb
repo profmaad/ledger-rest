@@ -15,6 +15,7 @@ module LedgerRest
     CONFIG_FILE = "ledger-rest.yml"
 
     configure do |c|
+      config = {}
       begin
         config = YAML.load_file(CONFIG_FILE)
         config.symbolize_keys!
@@ -22,8 +23,8 @@ module LedgerRest
         puts "Failed to load config."
       end
 
-      Ledger.configure config
-      Git.configure config
+      Ledger.configure(config)
+      Git.configure(config)
     end
 
     get '/version' do
@@ -113,12 +114,11 @@ module LedgerRest
     end
 
     put '/transactions/:meta' do
-
+      "Not yet implemented!"
     end
 
     delete '/transactions/:meta' do
-
+      "Not yet implemented!"
     end
-
   end
 end
