@@ -16,7 +16,9 @@ module LedgerRest
           data = JSON.parse(json(query, params), symbolize_names: true)
 
           data[:accounts] = expand_accounts(data[:accounts])
-          data[:accounts] = wrap_accounts(data[:accounts])
+          unless query =~ /--flat/
+            data[:accounts] = wrap_accounts(data[:accounts])
+          end
 
           data
         end

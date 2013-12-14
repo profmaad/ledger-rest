@@ -2,111 +2,91 @@
 require 'spec_helper'
 
 describe '/balance' do
-  let(:valid_json) do
-    {
-      "accounts" =>
-      [
-       {
-         "total" => "3177.80EUR",
-         "name" => "Assets",
-         "depth" => 1,
-         "fullname" => "Assets",
-         "accounts"=>
-         [
-          {
-            "total" => "5.70EUR",
-            "name" => "Cash",
-            "depth" => 2,
-            "fullname" => "Assets:Cash"
-          },
-          {
-            "total" => "3150.00EUR",
-            "name" => "Giro",
-            "depth" => 2,
-            "fullname" => "Assets:Giro"
-          },
-          {
-            "total" => "22.10EUR",
-            "name" => "Reimbursements",
-            "depth" => 2,
-            "fullname" => "Assets:Reimbursements",
-            "accounts" =>
-            [
-             { "total" => "22.10EUR",
-               "name" => "Hans Maulwurf",
-               "depth" => 3,
-               "fullname" => "Assets:Reimbursements:Hans Maulwurf"}
-            ]
-          }
-         ]
-       },
-       {
-         "total" => "-2019.00EUR",
-         "name" => "Equity",
-         "depth" => 1,
-         "fullname" => "Equity",
-         "accounts" =>
-         [
-          {
-            "total" => "-2019.00EUR",
-            "name" => "Opening Balances",
-            "depth" => 2,
-            "fullname" => "Equity:Opening Balances"
-          }
-         ]
-       },
-       {
-         "total" => "53.20EUR",
-         "name" => "Expenses",
-         "depth" => 1,
-         "fullname" => "Expenses",
-         "accounts" =>
-         [
-          {
-            "total" => "53.20EUR",
-            "name" => "Restaurants",
-            "depth" => 2,
-            "fullname" => "Expenses:Restaurants"
-          }
-         ]
-       },
-       {
-         "total" => "-1200.00EUR",
-         "name" => "Income",
-         "depth" => 1,
-         "fullname" => "Income",
-         "accounts" =>
-         [
-          {
-            "total" => "-1200.00EUR",
-            "name" => "Invoice",
-            "depth" => 2,
-            "fullname" => "Income:Invoice"
-          }
-         ]
-       },
-       {
-         "total" => "-12.00EUR",
-         "name" => "Liabilities",
-         "depth" => 1,
-         "fullname" => "Liabilities",
-         "accounts" =>
-         [
-          {
-            "total" => "-12.00EUR",
-            "name" => "Max Mustermann",
-            "depth" => 2,
-            "fullname" => "Liabilities:Max Mustermann"
-          }
-         ]
-       }
-      ],
-      "total" => "0"
-    }
+  context 'normally' do
+    let(:valid_json) do
+      {
+        "accounts" =>
+        [
+         {
+           'total' => '3177.80EUR',
+           'name' => 'Assets',
+           'depth' => 1,
+           'fullname' => 'Assets',
+           'accounts'=>
+           [
+            {
+              'total' => '5.70EUR',
+              'name' => 'Cash',
+              'depth' => 2,
+              'fullname' => 'Assets:Cash'
+            },
+            {
+              'total' => '3150.00EUR',
+              'name' => 'Giro',
+              'depth' => 2,
+              'fullname' => 'Assets:Giro'
+            },
+            {
+              'total' => '22.10EUR',
+              'name' => 'Reimbursements',
+              'depth' => 2,
+              'fullname' => 'Assets:Reimbursements',
+              'accounts' =>
+              [
+               {
+                 'total' => '22.10EUR',
+                 'name' => 'Hans Maulwurf',
+                 'depth' => 3,
+                 'fullname' => 'Assets:Reimbursements:Hans Maulwurf'
+               }
+              ]
+            }
+           ]
+         },
+         {
+           'total' => '-12.00EUR',
+           'name' => 'Liabilities',
+           'depth' => 1,
+           'fullname' => 'Liabilities',
+           'accounts' =>
+           [
+            {
+              'total' => '-12.00EUR',
+              'name' => 'Max Mustermann',
+              'depth' => 2,
+              'fullname' => 'Liabilities:Max Mustermann'
+            }
+           ]
+         }
+        ],
+        'total' => '3165.80EUR'
+      }
+    end
+
+    it 'expands and wraps accounts' do
+      get '/balance', query: 'Assets Liabilities'
+      JSON.parse(last_response.body).should deep_eq valid_json
+    end
   end
 
-  it 'returns the balance as JSON' do
-    get '/balance'
-    JSON.parse(last_response.body).should deep_eq valid_json
+  context 'with --flat query' do
+    let(:valid_json) do
+      { "accounts" =>
+        [
+         { 'total' => '5.70EUR', 'name' => 'Cash', 'depth' => 2, 'fullname' => 'Assets:Cash'} ,
+         { 'total' => '3150.00EUR', 'name' => 'Giro', 'depth' => 2, 'fullname' => 'Assets:Giro'} ,
+         { 'total' => '22.10EUR', 'name' => 'Reimbursements', 'depth' => 2, 'fullname' => 'Assets:Reimbursements'} ,
+         { 'total' => '22.10EUR', 'name' => 'Hans Maulwurf', 'depth' => 3, 'fullname' => 'Assets:Reimbursements:Hans Maulwurf'} ,
+         { 'total' => '-12.00EUR', 'name' => 'Liabilities', 'depth' => 1, 'fullname' => 'Liabilities'} ,
+         { 'total' => '-12.00EUR', 'name' => 'Max Mustermann', "depth" => 2, 'fullname' => 'Liabilities:Max Mustermann' }
+        ],
+        "total"=>"3165.80EUR"
+      }
+    end
+
+    it 'does not wrap accounts' do
+      get '/balance', query: '--flat Assets Liabilities'
+      JSON.parse(last_response.body).should deep_eq valid_json
+    end
   end
 end
