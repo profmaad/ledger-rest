@@ -84,7 +84,30 @@ describe '/register' do
     end
   end
 
-  context 'weekly report'
+  context 'weekly report' do
+    let(:valid_response) do
+      [
+       {
+         "beginning"=>"2013-12-01",
+         "end"=>"2013-12-07",
+         "postings"=>[
+                      {
+                        "account"=>"Expenses:Restaurants",
+                        "amount"=>"53.2",
+                        "total"=>"53.2",
+                        "commodity"=>"EUR"
+                      }
+                     ]
+       }
+      ]
+    end
+
+    it 'shows beginning, end and postings with account, amount and total' do
+      get '/register', query: '-W ^Expenses'
+      JSON.parse(last_response.body).should deep_eq valid_response
+    end
+  end
+
   context 'monthly report' do
     let(:valid_response) do
       [
@@ -108,6 +131,7 @@ describe '/register' do
       JSON.parse(last_response.body).should deep_eq valid_response
     end
   end
+
   context 'quarterly report'
   context 'yearly report'
   context 'report by payee'
