@@ -1,4 +1,3 @@
-
 include opening_balance.ledger
 include append.ledger
 include budget.ledger
