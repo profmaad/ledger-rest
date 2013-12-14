@@ -47,6 +47,11 @@ module LedgerRest
         end
       end
 
+      # Returns a hash with the balance for given query
+      def balance(query = nil)
+        Ledger::Balance.get(query)
+      end
+
       # Return the ledger version.
       def version
         exec('--version').match(/^Ledger (.*),/)[1]

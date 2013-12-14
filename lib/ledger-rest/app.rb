@@ -36,7 +36,7 @@ module LedgerRest
 
     get '/balance/?:query?' do
       content_type :json
-      Ledger::Balance.json(params[:query])
+      Ledger.balance(params[:query]).to_json
     end
 
     get '/budget/?:query?' do
