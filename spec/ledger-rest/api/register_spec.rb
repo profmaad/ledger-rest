@@ -156,6 +156,31 @@ describe '/register' do
       JSON.parse(last_response.body).should deep_eq valid_response
     end
   end
-  context 'yearly report'
+
+  context 'yearly report' do
+    let(:valid_response) do
+      [
+       {
+         'beginning'=>'2013-01-01',
+         'end'=>'2013-12-31',
+         'postings'=>
+         [
+          {
+            'account'=>'Expenses:Restaurants',
+            'amount'=>'53.2',
+            'total'=>'53.2',
+            'commodity'=>'EUR'
+          }
+         ]
+       }
+      ]
+    end
+
+    it 'shows beginning, end and postings with account, amount and total' do
+      get '/register', query: '-Y ^Expenses'
+      JSON.parse(last_response.body).should deep_eq valid_response
+    end
+  end
+
   context 'report by payee'
 end

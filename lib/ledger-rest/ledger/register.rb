@@ -5,7 +5,7 @@ module LedgerRest
       class << self
         def format(query)
           format = '{'
-          if query =~ /-D|--daily|-W|--weekly|-M|--monthly|--quarterly/
+          if query =~ /-D|--daily|-W|--weekly|-M|--monthly|--quarterly|-Y|--yearly/
             format << '"beginning": %(quoted(format_date(date))),'
             format << '"end": %(quoted(payee)),'
           else
