@@ -136,15 +136,15 @@ describe '/register' do
     let(:valid_response) do
       [
        {
-         'beginning'=>'2013-10-01',
-         'end'=>'2013-12-31',
+         'beginning' => '2013-10-01',
+         'end' => '2013-12-31',
          'postings'=>
          [
           {
-            'account'=>'Expenses:Restaurants',
-            'amount'=>'53.2',
-            'total'=>'53.2',
-            'commodity'=>'EUR'
+            'account' => 'Expenses:Restaurants',
+            'amount' => '53.2',
+            'total' => '53.2',
+            'commodity' => 'EUR'
           }
          ]
        }
@@ -161,15 +161,15 @@ describe '/register' do
     let(:valid_response) do
       [
        {
-         'beginning'=>'2013-01-01',
-         'end'=>'2013-12-31',
+         'beginning' => '2013-01-01',
+         'end' => '2013-12-31',
          'postings'=>
          [
           {
-            'account'=>'Expenses:Restaurants',
-            'amount'=>'53.2',
-            'total'=>'53.2',
-            'commodity'=>'EUR'
+            'account' => 'Expenses:Restaurants',
+            'amount' => '53.2',
+            'total' => '53.2',
+            'commodity' => 'EUR'
           }
          ]
        }
@@ -182,5 +182,48 @@ describe '/register' do
     end
   end
 
-  context 'report by payee'
+  context 'report by payee' do
+    let(:valid_response) do
+      [
+       {
+         "payee" => "NaveenaPath",
+         "postings" =>
+         [
+          {
+            "account" => "Expenses:Restaurants",
+            "amount" => "9",
+            "total" => "9",
+            "commodity" => "EUR"
+          }
+         ]
+       }, {
+         "payee" => "Shikgoo",
+         "postings" =>
+         [
+          {
+            "account" => "Expenses:Restaurants",
+            "amount" => "12",
+            "total" => "12",
+            "commodity" => "EUR"
+          }
+         ]
+       }, {
+         "payee" => "Trattoria La Vialla",
+         "postings" =>
+         [
+          {"account" => "Expenses:Restaurants",
+            "amount" => "32.2",
+            "total" => "32.2",
+            "commodity" => "EUR"
+          }
+         ]
+       }
+      ]
+    end
+
+    it 'shows beginning, end and postings with account, amount and total' do
+      get '/register', query: '--by-payee ^Expenses'
+      JSON.parse(last_response.body).should deep_eq valid_response
+    end
+  end
 end

@@ -8,6 +8,8 @@ module LedgerRest
           if query =~ /-D|--daily|-W|--weekly|-M|--monthly|--quarterly|-Y|--yearly/
             format << '"beginning": %(quoted(format_date(date))),'
             format << '"end": %(quoted(payee)),'
+          elsif query =~ /--by-payee/
+            format << '"payee": %(quoted(payee)),'
           else
             format << '"date": %(quoted(format_date(date))),'
             format << '"effective_date": %(effective_date ? quoted(effective_date) : "null"),'
