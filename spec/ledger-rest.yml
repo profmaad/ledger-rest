@@ -1,0 +1,2 @@
+ledger_file: "spec/files/main.ledger"
+ledger_bin: "/bin/ledger"

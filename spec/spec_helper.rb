@@ -1,9 +1,13 @@
+ENV['CONFIG_FILE'] ||= 'spec/ledger-rest.yml'
+
 require 'ledger-rest'
 require 'rack/test'
 
 module RSpecMixin
   include Rack::Test::Methods
-  def app; LedgerRest::App; end
+  def app
+    LedgerRest::App
+  end
 end
 
 RSpec.configure do |config|
