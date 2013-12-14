@@ -12,15 +12,14 @@ require 'ledger-rest/core_ext'
 
 module LedgerRest
   class App < Sinatra::Base
-    CONFIG_FILE = 'ledger-rest.yml'
-
     configure do |c|
       config = {}
+      filename = ENV['CONFIG_FILE'] || 'ledger-rest.yml'
       begin
-        config = YAML.load_file(CONFIG_FILE)
+        config = YAML.load_file(filename)
         config.symbolize_keys!
       rescue Errno::ENOENT
-        puts "'#{CONFIG_FILE}' not found."
+        fail "'#{filename}' not found."
       end
 
       Ledger.configure(config)
