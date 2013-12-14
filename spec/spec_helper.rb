@@ -3,6 +3,8 @@ ENV['CONFIG_FILE'] ||= 'spec/ledger-rest.yml'
 require 'ledger-rest'
 require 'rack/test'
 
+require 'support/deep_eq_matcher.rb'
+
 module RSpecMixin
   include Rack::Test::Methods
   def app
