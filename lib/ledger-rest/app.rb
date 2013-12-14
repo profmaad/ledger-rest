@@ -19,7 +19,7 @@ module LedgerRest
         config = YAML.load_file(filename)
         config.symbolize_keys!
       rescue Errno::ENOENT
-        fail "'#{filename}' not found."
+        raise "'#{filename}' not found."
       end
 
       Ledger.configure(config)
