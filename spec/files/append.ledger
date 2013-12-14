@@ -1,0 +1,13 @@
+2013/12/03 NaveenaPath
+    Expenses:Restaurants                     9.00EUR
+    Assets:Cash
+
+2013/12/05 Shikgoo
+    Expenses:Restaurants                    12.00EUR
+    Liabilities:Max Mustermann
+    ; meta_info: Some interesting meta information
+
+2013/12/10 Bioladen Tegeler Straße
+    ; Sonnenblumenkernbrot
+    Assets:Reimbursements:Hans Maulwurf      3.10EUR
+    Assets:Cash
