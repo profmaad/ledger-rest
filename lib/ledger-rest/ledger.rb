@@ -60,8 +60,7 @@ module LedgerRest
 
       # Return a list of payees.
       def payees(query = nil)
-        result = exec "payees #{query if query}"
-        { :payees => result.split("\n") }
+        exec("payees #{query if query}").split("\n")
       end
 
       # Returns an Array of payees with their respective usage count.
