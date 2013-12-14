@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 module LedgerRest
   class Ledger
-
     # A very simple parser for single legder format transactions.
     # There has to be a better way ... This does not implement the
     # whole ledger format. Tragically ... someone told me it´s the
@@ -11,14 +10,11 @@ module LedgerRest
     #
     # This works for `ledger entry` with my transactions ...
     class Parser
-
       class << self
-
         def parse(str)
           parser = Parser.new
           parser.parse(str)
         end
-
       end
 
       def initialize
@@ -30,20 +26,20 @@ module LedgerRest
         @str = str
         @transaction[:postings] = []
 
-        @transaction[:date],str = parse_date(str)
+        @transaction[:date], str = parse_date(str)
 
         effective_date, str = parse_effective_date(str)
         @transaction[:effective_date] = effective_date if effective_date
 
-        @transaction[:cleared],str = parse_cleared(str)
-        @transaction[:pending],str = parse_pending(str)
+        @transaction[:cleared], str = parse_cleared(str)
+        @transaction[:pending], str = parse_pending(str)
 
         code, str = parse_code(str)
         @transaction[:code] = code if code
 
-        @transaction[:payee],str = parse_payee(str)
+        @transaction[:payee], str = parse_payee(str)
 
-        comments,str = parse_comments(str)
+        comments, str = parse_comments(str)
         @transaction[:comments] = comments if comments
 
         str.split("\n").each do |line|
@@ -58,60 +54,60 @@ module LedgerRest
       end
 
       def parse_date(str)
-        if match = str.match(/\A(\d{4}\/\d{1,2}\/\d{1,2})(.*)/m)
-          [ match[1], match[2] ]
+        if match = str.match(%r{\A(\d{4}/\d{1,2}/\d{1,2})(.*)}m)
+          [match[1], match[2]]
         else
-          raise "Date was expected."
+          fail 'Date was expected.'
         end
       end
 
       def parse_effective_date(str)
-        if match = str.match(/\A=(\d{4}\/\d{1,2}\/\d{1,2})(.*)/m)
-          [ match[1], match[2] ]
+        if match = str.match(%r{\A=(\d{4}/\d{1,2}/\d{1,2})(.*)}m)
+          [match[1], match[2]]
         else
-          [ nil, str ]
+          [nil, str]
         end
       end
 
       def parse_pending(str)
         if match = str.match(/\A ! (.*)/m)
-          [ true, match[1] ]
+          [true, match[1]]
         else
-          [ false, str]
+          [false, str]
         end
       end
 
       def parse_cleared(str)
         if match = str.match(/\A \* (.*)/m)
-          [ true, match[1] ]
+          [true, match[1]]
         else
-          [ false, str]
+          [false, str]
         end
       end
 
       def parse_code(str)
         if match = str.match(/\A *?\(([^\(\)]+)\) (.*)/m)
-          [ match[1], match[2] ]
+          [match[1], match[2]]
         else
-          [ nil, str ]
+          [nil, str]
         end
       end
 
       def parse_payee(str)
         if match = str.match(/\A *?([^ ][^\n]+)\n(.*)/m)
-          [ match[1], match[2] ]
+          [match[1], match[2]]
         else
-          raise "No payee given."
+          fail 'No payee given.'
         end
       end
 
       def parse_comments(str)
-        comments = ""
+        comments = ''
         while str && match = str.match(/\A +;(.*?)(\n|$)(.*)/m)
           comments << match[1].strip << "\n"
           str = match[3]
         end
-        [ comments.empty? ? nil : comments, str ]
+        [comments.empty? ? nil : comments, str]
       end
 
       # parses a ledger posting line
@@ -137,28 +133,28 @@ module LedgerRest
       end
 
       def parse_account(str)
-        return [] if str.nil? or str.empty?
+        return [] if str.nil? || str.empty?
         if match = str.match(/\A +([\w:]+)(\n|$|  )(.*)/m)
-          [ match[1], false, false , match[3] ]
+          [match[1], false, false , match[3]]
         elsif match = str.match(/\A +\(([\w:]+)\)(\n|$|  )(.*)/m)
-          [ match[1], true, false , match[3] ]
+          [match[1], true, false , match[3]]
         elsif match = str.match(/\A +\[([\w:]+)\](\n|$|  )(.*)/m)
-          [ match[1], true, true , match[3] ]
+          [match[1], true, true , match[3]]
         else
-          [ nil, false, false, str ]
+          [nil, false, false, str]
         end
       end
 
       def parse_amount(str)
         if match = str.match(/\A(.*?)@@([^;]*?)(;(.*)|\n(.*)|$(.*))/m)
           amount = match[1].strip
-          [ amount.empty? ? nil : amount, nil, match[2].strip, match[3] ]
+          [amount.empty? ? nil : amount, nil, match[2].strip, match[3]]
         elsif match = str.match(/\A(.*?)@([^;]*)(;(.*)|\n(.*)|$(.*))/m)
           amount = match[1].strip
-          [ amount.empty? ? nil : amount, match[2].strip, nil, match[3] ]
+          [amount.empty? ? nil : amount, match[2].strip, nil, match[3]]
         elsif match = str.match(/\A([^;]*?)(;(.*)|\n(.*)|$(.*))/m)
           amount = match[1].strip
-          [ amount.empty? ? nil : amount, nil, nil, match[2] ]
+          [amount.empty? ? nil : amount, nil, nil, match[2]]
         end
       end
 
@@ -171,7 +167,7 @@ module LedgerRest
           comment = match[1]
         end
 
-        [ comment, actual_date, effective_date ]
+        [comment, actual_date, effective_date]
       end
     end
   end

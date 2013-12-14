@@ -12,15 +12,15 @@ require 'ledger-rest/core_ext'
 
 module LedgerRest
   class App < Sinatra::Base
-    CONFIG_FILE = "ledger-rest.yml"
+    CONFIG_FILE = 'ledger-rest.yml'
 
     configure do |c|
       config = {}
       begin
         config = YAML.load_file(CONFIG_FILE)
         config.symbolize_keys!
-      rescue Exception => e
-        puts "Failed to load config."
+      rescue Errno::ENOENT
+        puts "'#{CONFIG_FILE}' not found."
       end
 
       Ledger.configure(config)
@@ -30,8 +30,8 @@ module LedgerRest
     get '/version' do
       content_type :json
       {
-        "version" => LedgerRest::VERSION,
-        "ledger-version" => Ledger.version
+        'version' => LedgerRest::VERSION,
+        'ledger-version' => Ledger.version
       }.to_json
     end
 
@@ -63,31 +63,31 @@ module LedgerRest
     # gets a potential new entry via the entry command
     get '/transactions/entry/?:desc?' do
       content_type :json
-      { :transaction => Ledger::Entry.get(params[:desc]) }.to_json
+      { transaction: Ledger::Entry.get(params[:desc]) }.to_json
     end
 
     # creates a new entry based on the
     post '/transactions/entry/?:desc?' do
       content_type :json
-      { :transaction => Ledger::Entry.append(params[:desc]) }.to_json
+      { transaction: Ledger::Entry.append(params[:desc]) }.to_json
     end
 
     get '/transactions/:meta' do
-      "Not yet implemented!"
+      'Not yet implemented!'
     end
 
     get '/transactions' do
-      "Not yet implemented!"
+      'Not yet implemented!'
     end
 
     post '/transactions' do
       content_type :json
       begin
-        params = JSON.parse(params[:transaction], :symbolize_names => true)
+        params = JSON.parse(params[:transaction], symbolize_names: true)
 
         transaction = Transaction.create params
 
-        raise "Verification error" unless transaction.valid?
+        fail 'Verification error' unless transaction.valid?
 
         Git.invoke :before_write
 
@@ -99,26 +99,26 @@ module LedgerRest
       rescue JSON::ParserError => e
         [422,
          {
-           :error => true,
-           :message => "Unprocessible Entity: '#{e}'"
+           error: true,
+           message: "Unprocessible Entity: '#{e}'"
          }.to_json
         ]
       rescue RuntimeError => e
         [400,
          {
-           :error => true,
-           :message => "Adding the transaction failed: '#{e}'"
+           error: true,
+           message: "Adding the transaction failed: '#{e}'"
          }.to_json
         ]
       end
     end
 
     put '/transactions/:meta' do
-      "Not yet implemented!"
+      'Not yet implemented!'
     end
 
     delete '/transactions/:meta' do
-      "Not yet implemented!"
+      'Not yet implemented!'
     end
   end
 end

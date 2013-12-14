@@ -1,9 +1,9 @@
+# -*- coding: utf-8 -*-
 module LedgerRest
   class Ledger
     class Register
-
       FORMAT = [
-                "{",
+                '{',
                 '  "date": %(quoted(date)),',
                 '  "effective_date": %(effective_date ? quoted(effective_date) : "null"),',
                 '  "code": %(code ? quoted(code) : "null"),',
@@ -19,9 +19,8 @@ module LedgerRest
                ].join('\\n')
 
       class << self
-
         def get(query = nil, params = {})
-          JSON.parse(json(query, params), :symbolize_names => true)
+          JSON.parse(json(query, params), symbolize_names: true)
         end
 
         def json(query = nil, params = {})
@@ -32,7 +31,6 @@ module LedgerRest
 
           "{\"transactions\":[#{result}]}"
         end
-
       end
     end
   end

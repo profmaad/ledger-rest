@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 module LedgerRest
   class Ledger
     class Budget
@@ -13,9 +14,8 @@ module LedgerRest
                ].join('\\n')
 
       class << self
-
         def get(query = nil, params = {})
-          JSON.parse(json(query, params), :symbolize_names => true)
+          JSON.parse(json(query, params), symbolize_names: true)
         end
 
         def json(query = nil, params = {})
@@ -25,9 +25,7 @@ module LedgerRest
 
           "{\n  \"budget\": {\n    \"accounts\": [\n      #{result}\n  }\n}"
         end
-
       end
-
     end
   end
 end
