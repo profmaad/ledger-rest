@@ -2,34 +2,41 @@
 module LedgerRest
   class Ledger
     class Register
-      FORMAT = [
-                '{',
-                '  "date": %(quoted(date)),',
-                '  "effective_date": %(effective_date ? quoted(effective_date) : "null"),',
-                '  "code": %(code ? quoted(code) : "null"),',
-                '  "cleared": %(cleared ? "true" : "false"),',
-                '  "pending": %(pending ? "true" : "false"),',
-                '  "payee": %(quoted(payee)),',
-                '  "postings":',
-                '    [',
-                '      { "account": %(quoted(display_account)), "amount": %(quoted(amount)) },%/',
-                '      { "account": %(quoted(display_account)), "amount": %(quoted(amount)) },%/',
-                '    ]',
-                '},'
-               ].join('\\n')
-
       class << self
+        def format(query)
+          format = '{'
+          if query =~ /-M|--monthly/
+            format << '"beginning": %(quoted(format_date(date))),'
+            format << '"end": %(quoted(payee)),'
+          else
+            format << '"date": %(quoted(format_date(date))),'
+            format << '"effective_date": %(effective_date ? quoted(effective_date) : "null"),'
+            format << '"code": %(code ? quoted(code) : "null"),'
+            format << '"cleared": %(cleared ? "true" : "false"),'
+            format << '"pending": %(pending ? "true" : "false"),'
+            format << '"payee": %(quoted(payee)),'
+          end
+          format << '"postings": ['
+          format << '{ "account": %(quoted(display_account)), "amount": %(quoted(quantity(scrub(display_amount)))), "total": %(quoted(quantity(scrub(display_amount)))), "commodity": %(quoted(commodity)) },%/'
+          format << '{ "account": %(quoted(display_account)), "amount": %(quoted(quantity(scrub(display_amount)))), "total": %(quoted(quantity(scrub(display_amount)))), "commodity": %(quoted(commodity)) },%/'
+          format << ']},'
+          format
+        end
+
         def get(query = nil, params = {})
           JSON.parse(json(query, params), symbolize_names: true)
         end
 
         def json(query = nil, params = {})
-          params = { '--format' => FORMAT }.merge(params)
+          params = {
+            '--format' => format(query),
+            '--date-format' => '%Y-%m-%d'
+          }.merge(params)
           result = Ledger.exec("reg #{query}", params)
           result << "\n]\n}"
-          result.gsub! /\},\n *?\]/m, "}\n     \]"
-
-          "{\"transactions\":[#{result}]}"
+          result.gsub! '"end": "- ', '"end": "'
+          result.gsub! /\},\n? *?\]/m, "}]"
+          "[#{result}]"
         end
       end
     end
