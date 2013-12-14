@@ -35,7 +35,7 @@ module LedgerRest
             '--date-format' => '%Y-%m-%d'
           }.merge(params)
           result = Ledger.exec("reg #{query}", params)
-          result << "\n]\n}"
+          result << "]}"
           result.gsub! '"end": "- ', '"end": "'
           result.gsub! /\},\n? *?\]/m, "}]"
           "[#{result}]"
