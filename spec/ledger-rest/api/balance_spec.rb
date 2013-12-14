@@ -7,7 +7,7 @@ describe '/balance' do
       "accounts" =>
       [
        {
-         "total" => "1977.80EUR",
+         "total" => "3177.80EUR",
          "name" => "Assets",
          "depth" => 1,
          "fullname" => "Assets",
@@ -20,7 +20,7 @@ describe '/balance' do
             "fullname" => "Assets:Cash"
           },
           {
-            "total" => "1950.00EUR",
+            "total" => "3150.00EUR",
             "name" => "Giro",
             "depth" => 2,
             "fullname" => "Assets:Giro"
@@ -67,6 +67,21 @@ describe '/balance' do
             "name" => "Restaurants",
             "depth" => 2,
             "fullname" => "Expenses:Restaurants"
+          }
+         ]
+       },
+       {
+         "total" => "-1200.00EUR",
+         "name" => "Income",
+         "depth" => 1,
+         "fullname" => "Income",
+         "accounts" =>
+         [
+          {
+            "total" => "-1200.00EUR",
+            "name" => "Invoice",
+            "depth" => 2,
+            "fullname" => "Income:Invoice"
           }
          ]
        },

@@ -5,9 +5,10 @@ describe '/payees' do
   it 'returns payees' do
     get '/payees'
 
-    JSON.parse(last_response.body).should ==
+    JSON.parse(last_response.body).should =~
       [
        'Bioladen Tegeler Straße',
+       'Customer X',
        'NaveenaPath',
        'Opening Balance',
        'Shikgoo',

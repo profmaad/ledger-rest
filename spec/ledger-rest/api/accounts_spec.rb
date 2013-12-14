@@ -5,13 +5,14 @@ describe '/accounts' do
   it 'returns accounts' do
     get '/accounts'
 
-    JSON.parse(last_response.body).should ==
+    JSON.parse(last_response.body).should =~
       [
        'Assets:Cash',
        'Assets:Giro',
        'Assets:Reimbursements:Hans Maulwurf',
        'Equity:Opening Balances',
        'Expenses:Restaurants',
+       'Income:Invoice',
        'Liabilities:Max Mustermann'
       ]
   end
