@@ -5,38 +5,38 @@ describe '/balance' do
   context 'normally' do
     let(:valid_json) do
       {
-        "accounts" =>
+        'accounts' =>
         [
          {
-           'total' => '3177.80EUR',
-           'name' => 'Assets',
-           'depth' => 1,
+           'total'    => '3177.80EUR',
+           'name'     => 'Assets',
+           'depth'    => 1,
            'fullname' => 'Assets',
-           'accounts'=>
+           'accounts' =>
            [
             {
-              'total' => '5.70EUR',
-              'name' => 'Cash',
-              'depth' => 2,
+              'total'    => '5.70EUR',
+              'name'     => 'Cash',
+              'depth'    => 2,
               'fullname' => 'Assets:Cash'
             },
             {
-              'total' => '3150.00EUR',
-              'name' => 'Giro',
-              'depth' => 2,
+              'total'    => '3150.00EUR',
+              'name'     => 'Giro',
+              'depth'    => 2,
               'fullname' => 'Assets:Giro'
             },
             {
-              'total' => '22.10EUR',
-              'name' => 'Reimbursements',
-              'depth' => 2,
+              'total'    => '22.10EUR',
+              'name'     => 'Reimbursements',
+              'depth'    => 2,
               'fullname' => 'Assets:Reimbursements',
               'accounts' =>
               [
                {
-                 'total' => '22.10EUR',
-                 'name' => 'Hans Maulwurf',
-                 'depth' => 3,
+                 'total'    => '22.10EUR',
+                 'name'     => 'Hans Maulwurf',
+                 'depth'    => 3,
                  'fullname' => 'Assets:Reimbursements:Hans Maulwurf'
                }
               ]
@@ -44,16 +44,16 @@ describe '/balance' do
            ]
          },
          {
-           'total' => '-12.00EUR',
-           'name' => 'Liabilities',
-           'depth' => 1,
+           'total'    => '-12.00EUR',
+           'name'     => 'Liabilities',
+           'depth'    => 1,
            'fullname' => 'Liabilities',
            'accounts' =>
            [
             {
-              'total' => '-12.00EUR',
-              'name' => 'Max Mustermann',
-              'depth' => 2,
+              'total'    => '-12.00EUR',
+              'name'     => 'Max Mustermann',
+              'depth'    => 2,
               'fullname' => 'Liabilities:Max Mustermann'
             }
            ]
@@ -71,16 +71,41 @@ describe '/balance' do
 
   context 'with --flat query' do
     let(:valid_json) do
-      { "accounts" =>
+      {
+        'accounts' =>
         [
-         { 'total' => '5.70EUR', 'name' => 'Cash', 'depth' => 2, 'fullname' => 'Assets:Cash'} ,
-         { 'total' => '3150.00EUR', 'name' => 'Giro', 'depth' => 2, 'fullname' => 'Assets:Giro'} ,
-         { 'total' => '22.10EUR', 'name' => 'Reimbursements', 'depth' => 2, 'fullname' => 'Assets:Reimbursements'} ,
-         { 'total' => '22.10EUR', 'name' => 'Hans Maulwurf', 'depth' => 3, 'fullname' => 'Assets:Reimbursements:Hans Maulwurf'} ,
-         { 'total' => '-12.00EUR', 'name' => 'Liabilities', 'depth' => 1, 'fullname' => 'Liabilities'} ,
-         { 'total' => '-12.00EUR', 'name' => 'Max Mustermann', "depth" => 2, 'fullname' => 'Liabilities:Max Mustermann' }
+         {
+           'total'    => '5.70EUR',
+           'name'     => 'Cash',
+           'depth'    => 2,
+           'fullname' => 'Assets:Cash'
+         }, {
+           'total'    => '3150.00EUR',
+           'name'     => 'Giro',
+           'depth'    => 2,
+           'fullname' => 'Assets:Giro'
+         }, {
+           'total'    => '22.10EUR',
+           'name'     => 'Reimbursements',
+           'depth'    => 2,
+           'fullname' => 'Assets:Reimbursements'
+         }, {
+           'total'    => '22.10EUR',
+           'name'     => 'Hans Maulwurf',
+           'depth'    => 3,
+           'fullname' => 'Assets:Reimbursements:Hans Maulwurf'
+         }, {
+           'total'    => '-12.00EUR',
+           'name'     => 'Liabilities',
+           'depth'    => 1,
+           'fullname' => 'Liabilities'
+         }, {
+           'total'    => '-12.00EUR',
+           'name'     => 'Max Mustermann',
+           'depth'    => 2,
+           'fullname' => 'Liabilities:Max Mustermann' }
         ],
-        "total"=>"3165.80EUR"
+        'total' => '3165.80EUR'
       }
     end
 

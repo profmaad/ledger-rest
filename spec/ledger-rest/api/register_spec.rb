@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
 require 'spec_helper'
 
 describe '/register' do
   context 'normal' do
     let(:valid_response) do
       [
-       {'date' => '2013-12-01',
+       {
+         'date' => '2013-12-01',
          'effective_date' => nil,
          'code' => nil,
          'cleared' => false,
@@ -29,8 +31,7 @@ describe '/register' do
     end
 
     it 'shows all fields' do
-      get '/register',
-      query: '-p "2013-12-01"'
+      get '/register', query: '-p "2013-12-01"'
       JSON.parse(last_response.body).should deep_eq valid_response
     end
   end
@@ -40,37 +41,37 @@ describe '/register' do
       [
        {
          'beginning' => '2013-12-03',
-         'end' => '2013-12-03',
-         'postings' =>
+         'end'       => '2013-12-03',
+         'postings'  =>
          [
           {
-            'account' => 'Expenses:Restaurants',
-            'amount' => '9',
-            'total' => '9',
+            'account'   => 'Expenses:Restaurants',
+            'amount'    => '9',
+            'total'     => '9',
             'commodity' => 'EUR'
           }
          ]
        }, {
          'beginning' => '2013-12-04',
-         'end' => '2013-12-04',
-         'postings' =>
+         'end'       => '2013-12-04',
+         'postings'  =>
          [
           {
-            'account' => 'Expenses:Restaurants',
-            'amount' => '32.2',
-            'total' => '32.2',
+            'account'   => 'Expenses:Restaurants',
+            'amount'    => '32.2',
+            'total'     => '32.2',
             'commodity' => 'EUR'
           }
          ]
        }, {
          'beginning' => '2013-12-05',
-         'end' => '2013-12-05',
-         'postings' =>
+         'end'       => '2013-12-05',
+         'postings'  =>
          [
           {
-            'account' => 'Expenses:Restaurants',
-            'amount' => '12',
-            'total' => '12',
+            'account'   => 'Expenses:Restaurants',
+            'amount'    => '12',
+            'total'     => '12',
             'commodity' => 'EUR'
           }
          ]
@@ -88,16 +89,17 @@ describe '/register' do
     let(:valid_response) do
       [
        {
-         "beginning"=>"2013-12-01",
-         "end"=>"2013-12-07",
-         "postings"=>[
-                      {
-                        "account"=>"Expenses:Restaurants",
-                        "amount"=>"53.2",
-                        "total"=>"53.2",
-                        "commodity"=>"EUR"
-                      }
-                     ]
+         'beginning' => '2013-12-01',
+         'end'       => '2013-12-07',
+         'postings'  =>
+         [
+          {
+            'account'   => 'Expenses:Restaurants',
+            'amount'    => '53.2',
+            'total'     => '53.2',
+            'commodity' => 'EUR'
+          }
+         ]
        }
       ]
     end
@@ -114,14 +116,15 @@ describe '/register' do
        {
          'beginning' => '2013-12-01',
          'end'       => '2013-12-31',
-         'postings' => [
-                        {
-                          'account' => 'Expenses:Restaurants',
-                          'amount' => '53.2',
-                          'total' => '53.2',
-                          'commodity' => 'EUR'
-                        }
-                       ]
+         'postings'  =>
+         [
+          {
+            'account'   => 'Expenses:Restaurants',
+            'amount'    => '53.2',
+            'total'     => '53.2',
+            'commodity' => 'EUR'
+          }
+         ]
        }
       ]
     end
@@ -137,13 +140,13 @@ describe '/register' do
       [
        {
          'beginning' => '2013-10-01',
-         'end' => '2013-12-31',
-         'postings'=>
+         'end'       => '2013-12-31',
+         'postings'  =>
          [
           {
-            'account' => 'Expenses:Restaurants',
-            'amount' => '53.2',
-            'total' => '53.2',
+            'account'   => 'Expenses:Restaurants',
+            'amount'    => '53.2',
+            'total'     => '53.2',
             'commodity' => 'EUR'
           }
          ]
@@ -162,13 +165,13 @@ describe '/register' do
       [
        {
          'beginning' => '2013-01-01',
-         'end' => '2013-12-31',
-         'postings'=>
+         'end'       => '2013-12-31',
+         'postings'  =>
          [
           {
-            'account' => 'Expenses:Restaurants',
-            'amount' => '53.2',
-            'total' => '53.2',
+            'account'   => 'Expenses:Restaurants',
+            'amount'    => '53.2',
+            'total'     => '53.2',
             'commodity' => 'EUR'
           }
          ]
@@ -186,35 +189,36 @@ describe '/register' do
     let(:valid_response) do
       [
        {
-         "payee" => "NaveenaPath",
-         "postings" =>
+         'payee'    => 'NaveenaPath',
+         'postings' =>
          [
           {
-            "account" => "Expenses:Restaurants",
-            "amount" => "9",
-            "total" => "9",
-            "commodity" => "EUR"
+            'account'   => 'Expenses:Restaurants',
+            'amount'    => '9',
+            'total'     => '9',
+            'commodity' => 'EUR'
           }
          ]
        }, {
-         "payee" => "Shikgoo",
-         "postings" =>
+         'payee'    => 'Shikgoo',
+         'postings' =>
          [
           {
-            "account" => "Expenses:Restaurants",
-            "amount" => "12",
-            "total" => "12",
-            "commodity" => "EUR"
+            'account'   => 'Expenses:Restaurants',
+            'amount'    => '12',
+            'total'     => '12',
+            'commodity' => 'EUR'
           }
          ]
        }, {
-         "payee" => "Trattoria La Vialla",
-         "postings" =>
+         'payee'    => 'Trattoria La Vialla',
+         'postings' =>
          [
-          {"account" => "Expenses:Restaurants",
-            "amount" => "32.2",
-            "total" => "32.2",
-            "commodity" => "EUR"
+          {
+            'account'   => 'Expenses:Restaurants',
+            'amount'    => '32.2',
+            'total'     => '32.2',
+            'commodity' => 'EUR'
           }
          ]
        }
