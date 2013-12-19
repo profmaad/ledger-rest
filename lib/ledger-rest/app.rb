@@ -71,12 +71,9 @@ module LedgerRest
       { transaction: Ledger::Entry.append(params[:desc]) }.to_json
     end
 
-    get '/transactions/:meta' do
-      'Not yet implemented!'
-    end
-
-    get '/transactions' do
-      'Not yet implemented!'
+    get '/transactions/?:query?' do
+      content_type :json
+      Ledger.transactions(params[:query])
     end
 
     post '/transactions' do

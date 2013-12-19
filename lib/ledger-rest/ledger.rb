@@ -76,6 +76,16 @@ module LedgerRest
         exec("accounts #{query if query}").split("\n")
       end
 
+      # Returns a list of transactions as JSON
+      def transactions(query)
+        # This is a most ugly hack, which gathers the ledger
+        # information via python.
+        # TODO: write ruby-ledger bindings to retrieve reports with
+        # ruby directly!
+        query.gsub!('-', '\-') if query
+        `#{bin} python #{File.join(File.dirname(__FILE__), 'transactions.py')} "#{@file}" "#{query}"`
+      end
+
       # Return an Array of accounts with their respective usage count.
       def accounts_with_usage; end
     end
