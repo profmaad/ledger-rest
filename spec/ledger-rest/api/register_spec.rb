@@ -7,9 +7,9 @@ describe '/register' do
       [
        {
          'date' => '2013-12-01',
-         'effective_date' => nil,
+         'aux_date' => '2013-12-02',
          'code' => nil,
-         'cleared' => false,
+         'cleared' => true,
          'pending' => false,
          'payee' => 'Sparkasse',
          'postings' =>

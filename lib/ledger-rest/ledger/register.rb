@@ -12,7 +12,7 @@ module LedgerRest
             format << '"payee": %(quoted(payee)),'
           else
             format << '"date": %(quoted(format_date(date))),'
-            format << '"effective_date": %(effective_date ? quoted(effective_date) : "null"),'
+            format << '"aux_date": %(effective_date ? quoted(format_date(effective_date)) : "null"),'
             format << '"code": %(code ? quoted(code) : "null"),'
             format << '"cleared": %(cleared ? "true" : "false"),'
             format << '"pending": %(pending ? "true" : "false"),'
