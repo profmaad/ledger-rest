@@ -1,0 +1,2 @@
+ledger_file: "/path/to/my/ledger/files.dat"
+ledger_bin: "/bin/ledger"
