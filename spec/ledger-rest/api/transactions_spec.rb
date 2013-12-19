@@ -2,8 +2,7 @@
 require 'spec_helper'
 
 describe '/transactions' do
-  describe 'GET',
-  focus: true do
+  describe 'GET' do
     let(:valid_json) do
       [
        {
