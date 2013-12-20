@@ -120,9 +120,9 @@ module LedgerRest
         posting[:balanced] = balanced if balanced
 
         amount, posting_cost, per_unit_cost, str = parse_amount(str)
-        posting[:amount] = amount if amount
-        posting[:posting_cost] = posting_cost if posting_cost
-        posting[:per_unit_cost] = per_unit_cost if per_unit_cost
+        posting[:amount], posting[:commodity] = parse_amount_parts(amount) if amount
+        posting[:posting_cost], posting[:posting_cost_commodity] = parse_amount_parts(posting_cost) if posting_cost
+        posting[:per_unit_cost], posting[:per_unit_commodity] = parse_amount_parts(per_unit_cost) if per_unit_cost
 
         comment, actual_date, effective_date = parse_posting_comment(str)
         posting[:comment] = comment if comment
@@ -155,6 +155,14 @@ module LedgerRest
         elsif match = str.match(/\A([^;]*?)(;(.*)|\n(.*)|$(.*))/m)
           amount = match[1].strip
           [amount.empty? ? nil : amount, nil, nil, match[2]]
+        end
+      end
+
+      def parse_amount_parts(str)
+        if match = str.match(/^(.*?)(\d+(\.\d+)?)(.*?)$/)
+          [match[2].to_f, match[1].strip + match[4].strip]
+        else
+          [str, nil]
         end
       end
 
