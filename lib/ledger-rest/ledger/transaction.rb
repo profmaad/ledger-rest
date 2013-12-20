@@ -80,9 +80,9 @@ module LedgerRest
           result << "  #{'%.2f' % posting[:amount]}#{posting[:commodity]}"
 
           if posting[:per_unit_cost]
-            result << " @@ #{posting[:per_unit_cost]}"
+            result << " @@ #{'%.2f' % posting[:per_unit_cost]}#{posting[:per_unit_commodity]}"
           elsif posting[:posting_cost]
-            result << " @ #{posting[:posting_cost]}"
+            result << " @ #{'%.2f' % posting[:posting_cost]}#{posting[:posting_cost_commodity]}"
           end
 
           if posting[:actual_date] || posting[:effective_date]
