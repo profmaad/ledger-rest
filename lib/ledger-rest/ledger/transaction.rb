@@ -15,13 +15,21 @@ module LedgerRest
 
       # Return true if the `Transaction#to_ledger` is a valid ledger string.
       def valid?
-        result = IO.popen("#{settings.ledger_bin} -f - stats 2>&1", 'r+') do |f|
+        result = IO.popen("#{Ledger.bin} -f - stats 2>&1", 'r+') do |f|
           f.write to_ledger
           f.close_write
           f.readlines
         end
 
-        $CHILD_STATUS.success? && !result.empty?
+        $?.success? && !result.empty?
+      end
+
+      def check
+        IO.popen("#{Ledger.bin} -f - stats 2>&1", 'r+') do |f|
+          f.write to_ledger
+          f.close_write
+          f.readlines
+        end
       end
 
       def to_ledger
