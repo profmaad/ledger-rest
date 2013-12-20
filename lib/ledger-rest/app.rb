@@ -93,19 +93,9 @@ module LedgerRest
 
         [201, { transaction: transaction }.to_json]
       rescue JSON::ParserError => e
-        [422,
-         {
-           error: true,
-           message: "Unprocessible Entity: '#{e}'"
-         }.to_json
-        ]
+        [422, { error: true, message: "Unprocessible Entity: '#{e}'" }.to_json ]
       rescue RuntimeError => e
-        [400,
-         {
-           error: true,
-           message: "Adding the transaction failed: '#{e}'"
-         }.to_json
-        ]
+        [400, { error: true, message: "Adding the transaction failed: '#{e}'" }.to_json ]
       end
     end
 
