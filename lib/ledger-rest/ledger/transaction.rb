@@ -40,7 +40,9 @@ module LedgerRest
         result = ''
 
         result << self[:date]
-        result << "=#{self[:effective_date]}" if self[:effective_date]
+        if self[:effective_date]
+          result << "=#{self[:effective_date]}"
+        end
 
         if self[:cleared]
           result << ' *'
@@ -54,7 +56,7 @@ module LedgerRest
 
         self[:postings].each do |posting|
           if posting[:comment]
-            result << "  ; #{posting[:comment]}\n"
+            result << "    ; #{posting[:comment]}\n"
             next
           end
 
@@ -62,12 +64,12 @@ module LedgerRest
 
           if posting[:virtual]
             if posting[:balance]
-              result << "  [#{posting[:account]}]"
+              result << "    [#{posting[:account]}]"
             else
-              result << "  (#{posting[:account]})"
+              result << "    (#{posting[:account]})"
             end
           else
-            result << "  #{posting[:account]}"
+            result << "    #{posting[:account]}"
           end
 
           if posting[:amount].nil?
@@ -75,7 +77,7 @@ module LedgerRest
             next
           end
 
-          result << "  #{posting[:amount]}"
+          result << "  #{'%.2f' % posting[:amount]}#{posting[:commodity]}"
 
           if posting[:per_unit_cost]
             result << " @@ #{posting[:per_unit_cost]}"
@@ -95,7 +97,6 @@ module LedgerRest
           result << "\n"
         end
 
-        result << "\n"
         result
       end
     end

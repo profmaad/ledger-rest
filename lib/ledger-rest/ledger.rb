@@ -42,7 +42,7 @@ module LedgerRest
             last_char = f.getc
           end
 
-          f.write "\n" unless last_char == "\n"
+          f.write "\n"
           f.write(transaction.to_ledger)
         end
       end

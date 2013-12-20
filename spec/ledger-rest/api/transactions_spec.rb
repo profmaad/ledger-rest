@@ -290,7 +290,58 @@ describe '/transactions' do
   end
 
   describe 'POST' do
-    it 'adds a new transaction to the append file'
+    let(:transaction) do
+      {
+        date: '2013/12/12',
+        cleared: true,
+        payee: 'New Payee',
+        postings:
+        [
+         {
+           account: 'Expenses:Restaurants',
+           amount: 11.0,
+           commodity: 'EUR'
+         },
+         {
+           account: 'Assets:Cash',
+           amount: -11.0,
+           commodity: 'EUR'
+         }
+        ]
+      }
+    end
+
+    let(:correct_response) do
+      { transaction: transaction }
+    end
+
+    it 'adds a new transaction to the append file' do
+      restore_file('spec/files/append.ledger') do
+        post '/transactions', transaction.to_json
+
+        last_response.status.should == 201
+        JSON.parse(last_response.body, symbolize_names: true).should deep_eq correct_response
+        puts File.read('spec/files/append.ledger').should == <<RESULT
+2013/12/03 NaveenaPath
+    Expenses:Restaurants                     9.00EUR
+    Assets:Cash
+
+2013/12/05 Shikgoo
+    Expenses:Restaurants                    12.00EUR
+    Liabilities:Max Mustermann
+    ; meta_info: Some interesting meta information
+
+2013/12/10 Bioladen Tegeler Straße
+    ; Sonnenblumenkernbrot
+    Assets:Reimbursements:Hans Maulwurf      3.10EUR
+    Assets:Cash
+
+2013/12/12 * New Payee
+    Expenses:Restaurants  11.00EUR
+    Assets:Cash  -11.00EUR
+RESULT
+      end
+    end
   end
 
   describe 'PUT' do

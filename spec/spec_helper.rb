@@ -21,3 +21,11 @@ RSpec.configure do |config|
 
   config.order = 'random'
 end
+
+def restore_file(filename)
+  FileUtils.cp(filename, "#{filename}.backup")
+  yield
+ensure
+  FileUtils.rm(filename)
+  FileUtils.mv("#{filename}.backup", filename, force: true)
+end

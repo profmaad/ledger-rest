@@ -79,15 +79,16 @@ module LedgerRest
     post '/transactions' do
       content_type :json
       begin
-        params = JSON.parse(params[:transaction], symbolize_names: true)
+        request.body.rewind
+        request_payload = JSON.parse(request.body.read, symbolize_names: true)
 
-        transaction = Transaction.create params
+        transaction = Ledger::Transaction.new(request_payload)
 
-        fail 'Verification error' unless transaction.valid?
+        fail transaction.check.join("\n") unless transaction.valid?
 
         Git.invoke :before_write
 
-        @@ledger.append transaction
+        Ledger.append(transaction)
 
         Git.invoke :after_write
 

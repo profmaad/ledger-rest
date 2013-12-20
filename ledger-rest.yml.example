@@ -1,2 +1,3 @@
 ledger_file: "/path/to/my/ledger/files.dat"
 ledger_bin: "/bin/ledger"
+ledger_append_file: "/path/to/my/ledger/append_file.dat"
