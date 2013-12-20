@@ -25,7 +25,7 @@ for match in ledger.read_journal(filename).query(query):
         if str(match.xact.state) == 'Cleared':
             transaction['cleared'] = True
             transaction['pending'] = False
-        elif str(match.xact.state) == 'Cleared':
+        elif str(match.xact.state) == 'Pending':
             transaction['cleared'] = False
             transaction['pending'] = True
         else:
