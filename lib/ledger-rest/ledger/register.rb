@@ -32,7 +32,7 @@ module LedgerRest
         def json(query = nil, params = {})
           params = {
             '--format' => format(query),
-            '--date-format' => '%Y-%m-%d'
+            '--date-format' => '%Y/%m/%d'
           }.merge(params)
           result = Ledger.exec("reg #{query}", params)
           result << "]}"

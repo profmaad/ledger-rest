@@ -11,7 +11,7 @@ for match in ledger.read_journal(filename).query(query):
     if match.xact != last_xact:
         transaction = {}
         transaction['payee'] = match.xact.payee
-        transaction['date'] = str(match.xact.date)
+        transaction['date'] = match.xact.date.strftime('%Y/%m/%d')
 
         if match.xact.code != None:
             transaction['code'] = match.xact.code
@@ -20,7 +20,7 @@ for match in ledger.read_journal(filename).query(query):
             transaction['note'] = match.xact.note.strip()
 
         if match.xact.aux_date != None:
-            transaction['aux_date'] = str(match.xact.aux_date)
+            transaction['aux_date'] = match.xact.aux_date.strftime('%Y/%m/%d')
 
         if str(match.xact.state) == 'Cleared':
             transaction['cleared'] = True

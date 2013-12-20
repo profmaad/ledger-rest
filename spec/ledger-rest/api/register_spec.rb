@@ -6,8 +6,8 @@ describe '/register' do
     let(:valid_response) do
       [
        {
-         'date' => '2013-12-01',
-         'aux_date' => '2013-12-02',
+         'date' => '2013/12/01',
+         'aux_date' => '2013/12/02',
          'code' => nil,
          'cleared' => true,
          'pending' => false,
@@ -40,8 +40,8 @@ describe '/register' do
     let(:valid_response) do
       [
        {
-         'beginning' => '2013-12-03',
-         'end'       => '2013-12-03',
+         'beginning' => '2013/12/03',
+         'end'       => '2013/12/03',
          'postings'  =>
          [
           {
@@ -52,8 +52,8 @@ describe '/register' do
           }
          ]
        }, {
-         'beginning' => '2013-12-04',
-         'end'       => '2013-12-04',
+         'beginning' => '2013/12/04',
+         'end'       => '2013/12/04',
          'postings'  =>
          [
           {
@@ -64,8 +64,8 @@ describe '/register' do
           }
          ]
        }, {
-         'beginning' => '2013-12-05',
-         'end'       => '2013-12-05',
+         'beginning' => '2013/12/05',
+         'end'       => '2013/12/05',
          'postings'  =>
          [
           {
@@ -89,8 +89,8 @@ describe '/register' do
     let(:valid_response) do
       [
        {
-         'beginning' => '2013-12-01',
-         'end'       => '2013-12-07',
+         'beginning' => '2013/12/01',
+         'end'       => '2013/12/07',
          'postings'  =>
          [
           {
@@ -114,8 +114,8 @@ describe '/register' do
     let(:valid_response) do
       [
        {
-         'beginning' => '2013-12-01',
-         'end'       => '2013-12-31',
+         'beginning' => '2013/12/01',
+         'end'       => '2013/12/31',
          'postings'  =>
          [
           {
@@ -139,8 +139,8 @@ describe '/register' do
     let(:valid_response) do
       [
        {
-         'beginning' => '2013-10-01',
-         'end'       => '2013-12-31',
+         'beginning' => '2013/10/01',
+         'end'       => '2013/12/31',
          'postings'  =>
          [
           {
@@ -164,8 +164,8 @@ describe '/register' do
     let(:valid_response) do
       [
        {
-         'beginning' => '2013-01-01',
-         'end'       => '2013-12-31',
+         'beginning' => '2013/01/01',
+         'end'       => '2013/12/31',
          'postings'  =>
          [
           {
