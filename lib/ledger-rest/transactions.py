@@ -20,7 +20,7 @@ for match in ledger.read_journal(filename).query(query):
             transaction['note'] = match.xact.note.strip()
 
         if match.xact.aux_date != None:
-            transaction['aux_date'] = match.xact.aux_date.strftime('%Y/%m/%d')
+            transaction['effective_date'] = match.xact.aux_date.strftime('%Y/%m/%d')
 
         if str(match.xact.state) == 'Cleared':
             transaction['cleared'] = True

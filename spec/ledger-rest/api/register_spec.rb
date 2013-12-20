@@ -7,7 +7,7 @@ describe '/register' do
       [
        {
          'date' => '2013/12/01',
-         'aux_date' => '2013/12/02',
+         'effective_date' => '2013/12/02',
          'code' => nil,
          'cleared' => true,
          'pending' => false,

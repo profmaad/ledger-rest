@@ -79,7 +79,7 @@ describe '/transactions' do
          'cleared' => false,
          'pending' => false
        }, {
-         'aux_date' => '2013/12/02',
+         'effective_date' => '2013/12/02',
          'posts' =>
          [
           {
