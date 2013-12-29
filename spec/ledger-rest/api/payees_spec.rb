@@ -9,6 +9,7 @@ describe '/payees' do
       [
        'Bioladen Tegeler Straße',
        'Customer X',
+       'My Very Sane Bitcoin Exchange',
        'NaveenaPath',
        'Opening Balance',
        'Shikgoo',

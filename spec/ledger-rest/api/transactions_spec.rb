@@ -130,6 +130,23 @@ describe '/transactions' do
           }
          ],
          'pending' => false
+       }, {
+         'date'    => '2013/12/07',
+         'payee'   => 'My Very Sane Bitcoin Exchange',
+         'cleared' => true,
+         'posts'   =>
+         [
+          {
+            'account'   => 'Assets:Bitcoin',
+            'amount'    => 0.25,
+            'commodity' => 'BTC'
+          }, {
+            'account'   => 'Assets:Giro',
+            'amount'    => -154.83,
+            'commodity' => 'EUR'
+          }
+         ],
+         'pending' => false
        }
       ]
     end
@@ -168,7 +185,8 @@ describe '/transactions' do
 
     it 'adds a new transaction to the append file' do
       restore_file('spec/files/append.ledger') do
-        post '/transactions', transaction.to_json
+        post '/transactions',
+        transaction.to_json
 
         last_response.status.should == 201
         JSON.parse(last_response.body, symbolize_names: true).should deep_eq correct_response
