@@ -8,33 +8,75 @@ describe '/balance' do
         'accounts' =>
         [
          {
-           'total'    => '3177.80EUR',
+           'totals'  =>
+           [
+            {
+              'amount'    => 0.25,
+              'commodity' => 'BTC'
+            }, {
+              'amount'    => 3022.97,
+              'commodity' => 'EUR'
+            }
+           ],
            'name'     => 'Assets',
            'depth'    => 1,
            'fullname' => 'Assets',
            'accounts' =>
            [
             {
-              'total'    => '5.70EUR',
+              'totals' =>
+              [
+               {
+                 'amount'    => 0.25,
+                 'commodity' => 'BTC'
+               }
+              ],
+              'name'     => 'Bitcoin',
+              'depth'    => 2,
+              'fullname' => 'Assets:Bitcoin'
+            }, {
+              'totals' =>
+              [
+               {
+                 'amount'    => 5.7,
+                 'commodity' => 'EUR'
+               }
+              ],
               'name'     => 'Cash',
               'depth'    => 2,
               'fullname' => 'Assets:Cash'
-            },
-            {
-              'total'    => '3150.00EUR',
+            }, {
+              'totals'  =>
+              [
+               {
+                 'amount'    => 2995.17,
+                 'commodity' => 'EUR'
+               }
+              ],
               'name'     => 'Giro',
               'depth'    => 2,
               'fullname' => 'Assets:Giro'
-            },
-            {
-              'total'    => '22.10EUR',
+            }, {
+              'totals'  =>
+              [
+               {
+                 'amount'    => 22.1,
+                 'commodity' => 'EUR'
+               }
+              ],
               'name'     => 'Reimbursements',
               'depth'    => 2,
               'fullname' => 'Assets:Reimbursements',
               'accounts' =>
               [
                {
-                 'total'    => '22.10EUR',
+                 'totals'  =>
+                 [
+                  {
+                    'amount'    => 22.1,
+                    'commodity' => 'EUR'
+                  }
+                 ],
                  'name'     => 'Hans Maulwurf',
                  'depth'    => 3,
                  'fullname' => 'Assets:Reimbursements:Hans Maulwurf'
@@ -44,14 +86,26 @@ describe '/balance' do
            ]
          },
          {
-           'total'    => '-12.00EUR',
+           'totals'  =>
+           [
+            {
+              'amount'    => -12.0,
+              'commodity' => 'EUR'
+            }
+           ],
            'name'     => 'Liabilities',
            'depth'    => 1,
            'fullname' => 'Liabilities',
            'accounts' =>
            [
             {
-              'total'    => '-12.00EUR',
+              'totals'  =>
+              [
+               {
+                 'amount'    => -12.0,
+                 'commodity' => 'EUR'
+               }
+              ],
               'name'     => 'Max Mustermann',
               'depth'    => 2,
               'fullname' => 'Liabilities:Max Mustermann'
@@ -59,7 +113,16 @@ describe '/balance' do
            ]
          }
         ],
-        'total' => '3165.80EUR'
+        'totals' =>
+        [
+         {
+           'amount'    => 0.25,
+           'commodity' => 'BTC'
+         }, {
+           'amount'    => 3010.97,
+           'commodity' => 'EUR'
+         }
+        ]
       }
     end
 
@@ -75,37 +138,93 @@ describe '/balance' do
         'accounts' =>
         [
          {
-           'total'    => '5.70EUR',
+           'totals' =>
+           [
+            {
+              'amount'    => 0.25,
+              'commodity' => 'BTC'
+            }
+           ],
+           'name'     => 'Bitcoin',
+           'depth'    => 2,
+           'fullname' => 'Assets:Bitcoin'
+         }, {
+           'totals' =>
+           [
+            {
+              'amount'    => 5.7,
+              'commodity' => 'EUR'
+            }
+           ],
            'name'     => 'Cash',
            'depth'    => 2,
            'fullname' => 'Assets:Cash'
          }, {
-           'total'    => '3150.00EUR',
+           'totals'  =>
+           [
+            {
+              'amount'    => 2995.17,
+              'commodity' => 'EUR'
+            }
+           ],
            'name'     => 'Giro',
            'depth'    => 2,
            'fullname' => 'Assets:Giro'
          }, {
-           'total'    => '22.10EUR',
+           'totals'  =>
+           [
+            {
+              'amount'    => 22.1,
+              'commodity' => 'EUR'
+            }
+           ],
            'name'     => 'Reimbursements',
            'depth'    => 2,
            'fullname' => 'Assets:Reimbursements'
          }, {
-           'total'    => '22.10EUR',
+           'totals'  =>
+           [
+            {
+              'amount'    => 22.1,
+              'commodity' => 'EUR'
+            }
+           ],
            'name'     => 'Hans Maulwurf',
            'depth'    => 3,
            'fullname' => 'Assets:Reimbursements:Hans Maulwurf'
          }, {
-           'total'    => '-12.00EUR',
+           'totals'  =>
+           [
+            {
+              'amount'    => -12.0,
+              'commodity' => 'EUR'
+            }
+           ],
            'name'     => 'Liabilities',
            'depth'    => 1,
            'fullname' => 'Liabilities'
          }, {
-           'total'    => '-12.00EUR',
+           'totals'  =>
+           [
+            {
+              'amount'    => -12.0,
+              'commodity' => 'EUR'
+            }
+           ],
            'name'     => 'Max Mustermann',
            'depth'    => 2,
            'fullname' => 'Liabilities:Max Mustermann' }
         ],
-        'total' => '3165.80EUR'
+        'totals' =>
+        [
+         {
+           'amount'    => 0.25,
+           'commodity' => 'BTC'
+         }, {
+           'amount'    => 3010.97,
+           'commodity' => 'EUR'
+         }
+        ]
       }
     end
 

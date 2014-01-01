@@ -159,7 +159,7 @@ module LedgerRest
       end
 
       def parse_amount_parts(str)
-        if match = str.match(/^(.*?)(\d+(\.\d+)?)(.*?)$/)
+        if match = str.match(/^(.*?)(-?\d+(\.\d+)?)(.*?)$/)
           [match[2].to_f, match[1].strip + match[4].strip]
         else
           [str, nil]

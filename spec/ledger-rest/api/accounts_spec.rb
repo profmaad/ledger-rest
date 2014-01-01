@@ -7,6 +7,7 @@ describe '/accounts' do
 
     JSON.parse(last_response.body).should =~
       [
+       'Assets:Bitcoin',
        'Assets:Cash',
        'Assets:Giro',
        'Assets:Reimbursements:Hans Maulwurf',

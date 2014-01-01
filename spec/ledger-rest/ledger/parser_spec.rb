@@ -294,6 +294,30 @@ describe LedgerRest::Ledger::Parser do
   end
 
   describe '#parse_amount_parts' do
+    context 'given "-23.00EUR"' do
+      subject { @parser.parse_amount_parts('-23.00EUR') }
+
+      it 'returns the value' do
+        subject[0].should == -23.0
+      end
+
+      it 'returns the commodity' do
+        subject[1].should == 'EUR'
+      end
+    end
+
+    context 'given "EUR-23.00"' do
+      subject { @parser.parse_amount_parts('EUR-23.00') }
+
+      it 'returns the value' do
+        subject[0].should == -23.0
+      end
+
+      it 'returns the commodity' do
+        subject[1].should == 'EUR'
+      end
+    end
+
     context 'given "23.00EUR"' do
       subject { @parser.parse_amount_parts('23.00EUR') }
 

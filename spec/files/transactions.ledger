@@ -9,3 +9,7 @@
 2013/12/06 Customer X
     Assets:Giro                            1200.00EUR
     Income:Invoice
+
+2013/12/07 * My Very Sane Bitcoin Exchange
+    Assets:Bitcoin              0.25 BTC @@ 154.83EUR
+    Assets:Giro
