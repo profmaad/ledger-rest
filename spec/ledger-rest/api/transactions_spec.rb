@@ -190,7 +190,7 @@ describe '/transactions' do
 
         last_response.status.should == 201
         JSON.parse(last_response.body, symbolize_names: true).should deep_eq correct_response
-        puts File.read('spec/files/append.ledger').should == <<RESULT
+        File.read('spec/files/append.ledger').should == <<RESULT
 2013/12/03 NaveenaPath
     Expenses:Restaurants                     9.00EUR
     Assets:Cash
