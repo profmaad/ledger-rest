@@ -25,7 +25,6 @@ module LedgerRest
 
         def json(query = nil, params = {})
           params = { '--format' => FORMAT }.merge(params)
-          puts "bal #{query}"
           result = Ledger.exec("bal #{query}", params)
 
           parser = Ledger::Parser.new
