@@ -16,6 +16,7 @@ module LedgerRest
           data = JSON.parse(json(query, params), symbolize_names: true)
 
           data[:accounts] = expand_accounts(data[:accounts])
+
           unless query =~ /--flat/
             data[:accounts] = wrap_accounts(data[:accounts])
           end
@@ -25,7 +26,7 @@ module LedgerRest
 
         def json(query = nil, params = {})
           params = { '--format' => FORMAT }.merge(params)
-          result = Ledger.exec("bal #{query}", params)
+          result = Ledger.exec("bal #{query.gsub('--flat', '')}", params)
 
           parser = Ledger::Parser.new
           result.gsub! /\[\["(?<amounts>[^"]+)"\]\]/m do |a, b|
